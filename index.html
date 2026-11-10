@@ -4,534 +4,225 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TEMAN BELAJAR</title>
-
 <style>
-* {
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f7f5ff;
-    color: #30304a;
-}
-
-header {
-    background: linear-gradient(120deg, #7057d9, #ad83ed, #ff91b7);
-    color: white;
-    padding: 35px 20px;
-    text-align: center;
-}
-
-header h1 {
-    font-size: 34px;
-    margin: 0 0 10px;
-}
-
-header p {
-    margin: 0;
-}
-
-.container {
-    max-width: 1050px;
-    margin: 25px auto;
-    padding: 0 18px;
-}
-
-.welcome {
-    margin-bottom: 20px;
-}
-
-.welcome h2 {
-    margin-bottom: 5px;
-}
-
-.welcome p {
-    color: #777;
-}
-
-.stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
-    margin-bottom: 20px;
-}
-
-.card {
-    background: white;
-    padding: 20px;
-    border-radius: 17px;
-    box-shadow: 0 4px 15px #0000000c;
-}
-
-.stat {
-    text-align: center;
-}
-
-.stat h3 {
-    font-size: 27px;
-    color: #7057d9;
-    margin: 10px 0 0;
-}
-
-.layout {
-    display: grid;
-    grid-template-columns: 1.3fr 0.7fr;
-    gap: 18px;
-}
-
-h3 {
-    margin-top: 0;
-}
-
-.mission {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    border-bottom: 1px solid #eee;
-    padding: 13px 0;
-}
-
-.mission span {
-    flex: 1;
-    font-size: 14px;
-}
-
-button {
-    border: none;
-    background: #7057d9;
-    color: white;
-    padding: 10px 13px;
-    border-radius: 9px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-button:hover {
-    opacity: 0.85;
-}
-
-button:disabled {
-    background: #b8b2cc;
-    cursor: default;
-}
-
-input, textarea, select {
-    width: 100%;
-    padding: 12px;
-    margin: 7px 0 12px;
-    border: 1px solid #ddd;
-    border-radius: 9px;
-    font-size: 14px;
-}
-
-.progress {
-    background: #eeeaf8;
-    height: 13px;
-    border-radius: 20px;
-    overflow: hidden;
-    margin: 12px 0;
-}
-
-.progress-bar {
-    background: linear-gradient(90deg, #7057d9, #ff91b7);
-    width: 0%;
-    height: 100%;
-    transition: 0.3s;
-}
-
-.badge {
-    display: inline-block;
-    background: #fff0c9;
-    padding: 8px;
-    border-radius: 20px;
-    font-size: 12px;
-    margin: 4px;
-}
-
-.quote {
-    background: #fff5d9;
-    padding: 15px;
-    border-radius: 12px;
-    line-height: 1.5;
-}
-
-footer {
-    text-align: center;
-    padding: 25px;
-    color: #888;
-    font-size: 12px;
-}
-
-@media(max-width:700px) {
-    .layout {
-        grid-template-columns: 1fr;
-    }
-
-    .stats {
-        grid-template-columns: 1fr;
-    }
-
-    header h1 {
-        font-size: 27px;
-    }
-}
+:root{--purple:#6558d3;--pink:#f28ab8;--blue:#eaf0ff;--ink:#26304a;--muted:#68718a;--white:#fff;--bg:#f7f7ff;--green:#16865b}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55}
+header{background:linear-gradient(120deg,#6558d3,#9a72dc,#ed8eb8);color:white;padding:34px 18px;text-align:center}
+header h1{margin:0;font-size:clamp(27px,5vw,42px);letter-spacing:1px}
+header p{margin:8px 0 0;font-size:16px}
+nav{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;background:#fff;padding:12px;position:sticky;top:0;z-index:5;box-shadow:0 3px 12px #27304a12}
+nav button{border:0;border-radius:22px;padding:10px 16px;background:#f0efff;color:#4c438f;font-weight:bold;cursor:pointer}
+nav button.active,nav button:hover{background:var(--purple);color:#fff}
+main{max-width:1050px;margin:24px auto;padding:0 16px 45px}
+.panel{display:none}.panel.active{display:block}
+.welcome,.card{background:#fff;border-radius:18px;padding:22px;margin-bottom:18px;box-shadow:0 5px 20px #28304a0d}
+.welcome{background:linear-gradient(120deg,#fff,#f2efff)}
+h2{margin-top:0;color:#4d459b}h3{margin:0 0 10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}
+.tile{background:#fff;border-radius:16px;padding:18px;border:1px solid #ecebfa}
+.tile .emoji{font-size:28px}
+.small{font-size:14px;color:var(--muted)}
+.tag{display:inline-block;background:#f0efff;color:#5147a2;border-radius:20px;padding:4px 10px;font-size:12px;font-weight:bold}
+.lesson{border-left:5px solid #8b7ce4;padding:12px 15px;background:#faf9ff;border-radius:8px;margin:12px 0}
+button.primary,.primary{background:var(--purple);color:white;border:0;border-radius:10px;padding:11px 17px;font-weight:bold;cursor:pointer}
+button.secondary{background:#f0efff;color:#5147a2;border:0;border-radius:10px;padding:10px 14px;cursor:pointer;font-weight:bold}
+button:disabled{opacity:.55;cursor:not-allowed}
+.question{padding:15px;border:1px solid #e7e5f7;border-radius:12px;margin:13px 0}
+.question label{display:block;margin:7px 0;cursor:pointer}
+input[type=text],input[type=email],input[type=tel],textarea,select{width:100%;padding:12px;border:1px solid #d9d8e9;border-radius:10px;font:inherit;margin:6px 0 13px;background:#fff}
+textarea{min-height:115px;resize:vertical}
+.result{padding:13px;border-radius:10px;background:#eefaf4;color:#176447;margin-top:12px;display:none}
+.contact{display:flex;gap:12px;flex-wrap:wrap}
+.contact a{display:inline-block;text-decoration:none;padding:12px 16px;border-radius:10px;font-weight:bold}
+.wa{background:#e5f8ec;color:#147a42}.email{background:#eeeaff;color:#5147a2}
+footer{text-align:center;padding:22px;color:#747b91;font-size:13px}
+hr{border:0;border-top:1px solid #eeeef5;margin:20px 0}
+@media(max-width:600px){nav{justify-content:flex-start}nav button{font-size:13px;padding:9px 12px}.welcome,.card{padding:17px}}
 </style>
 </head>
-
 <body>
-
 <header>
-    <h1>🌈 TEMAN BELAJAR</h1>
-    <p>Temukan Motivasi, Atur Belajar, Raih Kemajuan</p>
+  <h1>🌈 TEMAN BELAJAR</h1>
+  <p>Temukan Motivasi, Atur Belajar, Raih Kemajuan</p>
 </header>
+<nav>
+  <button class="active" data-tab="beranda">Beranda</button>
+  <button data-tab="materi">Materi</button>
+  <button data-tab="kuis">Kuis</button>
+  <button data-tab="refleksi">Refleksi</button>
+  <button data-tab="gurubk">Hubungi Guru BK</button>
+</nav>
+<main>
+<section id="beranda" class="panel active">
+  <div class="welcome">
+    <h2>Halo, Pejuang Belajar! 👋</h2>
+    <p>Selamat datang di TEMAN BELAJAR. Pelajari cara mengatur kegiatan belajar, uji pemahamanmu, lalu tuliskan refleksi agar kamu semakin mengenal kebiasaan belajarmu.</p>
+    <span class="tag">Media pendukung BK bidang belajar</span>
+  </div>
+  <div class="grid">
+    <div class="tile"><div class="emoji">📚</div><h3>Materi belajar</h3><p class="small">Pelajari strategi mengatur waktu, menetapkan target, dan belajar efektif.</p><button class="secondary" onclick="showTab('materi')">Buka materi</button></div>
+    <div class="tile"><div class="emoji">🧠</div><h3>Kuis pemahaman</h3><p class="small">Jawab pertanyaan singkat untuk mengecek pemahamanmu.</p><button class="secondary" onclick="showTab('kuis')">Mulai kuis</button></div>
+    <div class="tile"><div class="emoji">✍️</div><h3>Refleksi diri</h3><p class="small">Kenali hal yang sudah baik dan hal yang ingin kamu perbaiki.</p><button class="secondary" onclick="showTab('refleksi')">Isi refleksi</button></div>
+    <div class="tile"><div class="emoji">💬</div><h3>Dukungan Guru BK</h3><p class="small">Sampaikan pertanyaan atau kebutuhan bantuan belajar kepada Guru BK.</p><button class="secondary" onclick="showTab('gurubk')">Hubungi Guru BK</button></div>
+  </div>
+</section>
 
-<div class="container">
+<section id="materi" class="panel">
+  <div class="card">
+    <h2>📚 Materi: Mengelola Belajar dengan Baik</h2>
+    <p class="small">Baca materi berikut secara berurutan. Kamu dapat menerapkannya sedikit demi sedikit dalam kegiatan sehari-hari.</p>
+    <div class="lesson"><h3>1. Mengenali tujuan belajar</h3><p>Tujuan belajar membantu kita mengetahui apa yang ingin dicapai. Buat tujuan yang jelas, realistis, dan dapat dilakukan. Contoh: “Hari ini saya akan memahami satu subbab IPA dan mengerjakan lima soal latihan.”</p></div>
+    <div class="lesson"><h3>2. Mengatur waktu belajar</h3><p>Buat jadwal yang sesuai dengan kegiatanmu. Dahulukan tugas yang penting atau memiliki batas waktu dekat. Sisipkan waktu istirahat agar kamu tidak mudah lelah.</p></div>
+    <div class="lesson"><h3>3. Menerapkan cara belajar efektif</h3><p>Jauhkan gangguan, siapkan alat belajar, lalu fokus pada satu tugas. Kamu bisa mencoba membaca aktif, membuat rangkuman dengan bahasamu sendiri, latihan soal, atau menjelaskan kembali materi yang dipelajari.</p></div>
+    <div class="lesson"><h3>4. Memantau kemajuan</h3><p>Setelah belajar, periksa apakah tujuanmu tercapai. Jika belum, cari tahu hambatannya dan sesuaikan rencana. Kemajuan kecil tetap merupakan kemajuan.</p></div>
+    <div class="lesson"><h3>5. Meminta bantuan saat diperlukan</h3><p>Jika kesulitan memahami pelajaran, mengatur waktu, atau menjaga motivasi, kamu dapat berdiskusi dengan guru mata pelajaran, teman, orang tua, atau Guru BK.</p></div>
+    <hr><p><b>Ingat:</b> belajar bukan tentang harus selalu sempurna, tetapi tentang membangun kebiasaan yang lebih baik secara bertahap.</p>
+  </div>
+</section>
 
-    <section class="welcome">
-        <h2>Halo, Pejuang Belajar! 👋</h2>
-        <p>Yuk, mulai langkah kecil untuk mencapai tujuan belajarmu.</p>
-    </section>
+<section id="kuis" class="panel">
+  <div class="card">
+    <h2>🧠 Kuis Pemahaman</h2>
+    <p>Pilih satu jawaban yang paling tepat pada setiap pertanyaan, lalu tekan tombol “Periksa Jawaban”.</p>
+    <form id="quizForm">
+      <div class="question"><b>1. Apa manfaat menetapkan tujuan belajar?</b>
+        <label><input type="radio" name="q1" value="a"> Agar kegiatan belajar lebih terarah</label>
+        <label><input type="radio" name="q1" value="b"> Agar tidak perlu membuat jadwal</label>
+        <label><input type="radio" name="q1" value="c"> Agar semua tugas dikerjakan sekaligus</label>
+      </div>
+      <div class="question"><b>2. Ketika memiliki beberapa tugas, sebaiknya kita...</b>
+        <label><input type="radio" name="q2" value="a"> Mengabaikan semuanya</label>
+        <label><input type="radio" name="q2" value="b"> Menentukan prioritas berdasarkan kepentingan dan tenggat</label>
+        <label><input type="radio" name="q2" value="c"> Mengerjakan hanya tugas yang paling mudah</label>
+      </div>
+      <div class="question"><b>3. Contoh cara belajar aktif adalah...</b>
+        <label><input type="radio" name="q3" value="a"> Membaca sambil membuka banyak hiburan</label>
+        <label><input type="radio" name="q3" value="b"> Menyalin tanpa memahami</label>
+        <label><input type="radio" name="q3" value="c"> Membuat rangkuman dengan kata-kata sendiri</label>
+      </div>
+      <div class="question"><b>4. Setelah selesai belajar, kita sebaiknya...</b>
+        <label><input type="radio" name="q4" value="a"> Memeriksa kemajuan dan hambatan</label>
+        <label><input type="radio" name="q4" value="b"> Langsung melupakan target</label>
+        <label><input type="radio" name="q4" value="c"> Tidak perlu mengevaluasi apa pun</label>
+      </div>
+      <div class="question"><b>5. Jika mengalami kesulitan belajar yang berulang, kamu dapat...</b>
+        <label><input type="radio" name="q5" value="a"> Memendamnya sendiri</label>
+        <label><input type="radio" name="q5" value="b"> Meminta bantuan Guru BK atau pihak yang dipercaya</label>
+        <label><input type="radio" name="q5" value="c"> Berhenti mencoba</label>
+      </div>
+      <button class="primary" type="button" onclick="checkQuiz()">Periksa Jawaban</button>
+      <button class="secondary" type="reset" onclick="document.getElementById('quizResult').style.display='none'">Ulangi</button>
+    </form>
+    <div id="quizResult" class="result" aria-live="polite"></div>
+  </div>
+</section>
 
-    <section class="stats">
-        <div class="card stat">
-            ⭐ Total Poin
-            <h3 id="points">0</h3>
-        </div>
+<section id="refleksi" class="panel">
+  <div class="card">
+    <h2>✍️ Refleksi Belajarku</h2>
+    <p>Luangkan waktu untuk menjawab pertanyaan berikut dengan jujur. Jawaban tersimpan di browser/perangkat yang sedang kamu gunakan.</p>
+    <label for="r1"><b>1. Hal baru apa yang saya pelajari hari ini?</b></label>
+    <textarea id="r1" placeholder="Tuliskan hal yang kamu pelajari..."></textarea>
+    <label for="r2"><b>2. Apa yang sudah berjalan baik dalam kegiatan belajar saya?</b></label>
+    <textarea id="r2" placeholder="Ceritakan hal yang sudah berjalan baik..."></textarea>
+    <label for="r3"><b>3. Kesulitan apa yang masih saya hadapi?</b></label>
+    <textarea id="r3" placeholder="Tuliskan kesulitan yang kamu alami..."></textarea>
+    <label for="r4"><b>4. Apa satu langkah kecil yang akan saya lakukan berikutnya?</b></label>
+    <textarea id="r4" placeholder="Contoh: membuat jadwal belajar untuk besok..."></textarea>
+    <button class="primary" onclick="saveReflection()">Simpan Refleksi</button>
+    <button class="secondary" onclick="clearReflection()">Hapus Isian</button>
+    <p id="reflectionStatus" class="small" aria-live="polite"></p>
+  </div>
+</section>
 
-        <div class="card stat">
-            🎯 Misi Selesai
-            <h3 id="completed">0</h3>
-        </div>
-
-        <div class="card stat">
-            📈 Progres
-            <h3 id="percent">0%</h3>
-        </div>
-    </section>
-
-    <section class="layout">
-
-        <div class="card">
-            <h3>🎯 Misi Belajarku</h3>
-
-            <div id="missionList"></div>
-
-            <hr>
-
-            <h3>➕ Tambahkan Target Belajar</h3>
-
-            <label for="task">Nama target belajar</label>
-            <input
-                type="text"
-                id="task"
-                placeholder="Contoh: Membaca materi selama 20 menit"
-            >
-
-            <label for="reward">Poin misi</label>
-            <select id="reward">
-                <option value="10">10 Poin</option>
-                <option value="15">15 Poin</option>
-                <option value="20">20 Poin</option>
-                <option value="25">25 Poin</option>
-            </select>
-
-            <button onclick="addMission()">
-                Tambah Misi
-            </button>
-        </div>
-
-        <div>
-
-            <div class="card">
-                <h3>📊 Progres Belajar</h3>
-
-                <p id="progressText">0 dari 3 misi selesai</p>
-
-                <div class="progress">
-                    <div class="progress-bar" id="progressBar"></div>
-                </div>
-
-                <h3>🏅 Lencana Saya</h3>
-                <div id="badges">
-                    Belum ada lencana.
-                </div>
-            </div>
-
-            <br>
-
-            <div class="card">
-                <h3>💭 Refleksi Belajar</h3>
-
-                <label for="reflection">
-                    Apa yang sudah kamu pelajari hari ini?
-                </label>
-
-                <textarea
-                    id="reflection"
-                    rows="4"
-                    placeholder="Tuliskan refleksi belajarmu..."
-                ></textarea>
-
-                <button onclick="saveReflection()">
-                    Simpan Refleksi
-                </button>
-
-                <p id="saved"></p>
-            </div>
-
-            <br>
-
-            <div class="card">
-                <h3>🌟 Motivasi Hari Ini</h3>
-
-                <div class="quote" id="quote">
-                    Tidak perlu menjadi sempurna.
-                    Teruslah berusaha dan berkembang!
-                </div>
-
-                <br>
-
-                <button onclick="newQuote()">
-                    Motivasi Baru
-                </button>
-            </div>
-
-            <br>
-
-            <div class="card">
-                <h3>🧑‍🏫 Dukungan Guru BK</h3>
-
-                <p>
-                    Punya kesulitan dalam mengatur kegiatan belajar?
-                    Siapkan catatan untuk dibicarakan bersama Guru BK.
-                </p>
-
-                <textarea
-                    id="consultation"
-                    rows="3"
-                    placeholder="Tuliskan hal yang ingin dikonsultasikan..."
-                ></textarea>
-
-                <button onclick="makeNote()">
-                    Buat Catatan Konsultasi
-                </button>
-
-                <p id="noteResult"></p>
-            </div>
-
-        </div>
-    </section>
-</div>
-
-<footer>
-    TEMAN BELAJAR © 2026 |
-    Media Pendukung Layanan BK Bidang Belajar
-</footer>
+<section id="gurubk" class="panel">
+  <div class="card">
+    <h2>💬 Hubungi Guru BK</h2>
+    <p>Kamu dapat menghubungi Guru BK melalui WhatsApp atau email. Isi kontak resmi sekolah terlebih dahulu agar tombol mengarah ke Guru BK yang benar.</p>
+    <label for="bkName">Nama Guru BK (opsional)</label>
+    <input id="bkName" type="text" placeholder="Contoh: Ibu/Bapak ...">
+    <label for="bkPhone">Nomor WhatsApp Guru BK</label>
+    <input id="bkPhone" type="tel" placeholder="Contoh: 62812XXXXXXXX">
+    <label for="bkEmail">Email Guru BK</label>
+    <input id="bkEmail" type="email" placeholder="Contoh: gurubk@sekolah.sch.id">
+    <label for="studentName">Nama kamu</label>
+    <input id="studentName" type="text" placeholder="Nama siswa">
+    <label for="message">Pesan atau hal yang ingin dikonsultasikan</label>
+    <textarea id="message" placeholder="Tuliskan secara singkat hal yang ingin kamu diskusikan dengan Guru BK..."></textarea>
+    <button class="primary" onclick="openWhatsApp()">Kirim melalui WhatsApp</button>
+    <button class="secondary" onclick="openEmail()">Kirim melalui Email</button>
+    <p class="small">Catatan: tombol akan membuka aplikasi WhatsApp atau email dengan pesan yang sudah disiapkan. Kamu tetap perlu menekan tombol kirim di aplikasi tersebut. Jangan menuliskan kata sandi atau informasi pribadi yang sangat sensitif.</p>
+    <div id="contactStatus" class="small" aria-live="polite"></div>
+  </div>
+</section>
+</main>
+<footer>TEMAN BELAJAR · Media pendukung layanan Bimbingan dan Konseling bidang belajar</footer>
 
 <script>
-let missions = [
-    {
-        title: "Menentukan target belajar hari ini",
-        points: 10,
-        done: false
-    },
-    {
-        title: "Fokus belajar selama 20 menit",
-        points: 15,
-        done: false
-    },
-    {
-        title: "Merapikan catatan pelajaran",
-        points: 10,
-        done: false
-    }
-];
-
-const quotes = [
-    "Kemajuan kecil tetaplah sebuah kemajuan.",
-    "Jangan takut mencoba hal baru.",
-    "Belajar hari ini adalah investasi masa depan.",
-    "Konsisten lebih penting daripada terburu-buru."
-];
-
-function renderMissions() {
-    const list = document.getElementById("missionList");
-    list.innerHTML = "";
-
-    missions.forEach((mission, index) => {
-        const row = document.createElement("div");
-        row.className = "mission";
-
-        const name = document.createElement("span");
-        name.textContent =
-            mission.title + " (" + mission.points + " poin)";
-
-        const button = document.createElement("button");
-        button.textContent =
-            mission.done ? "✓ Selesai" : "Selesaikan";
-
-        button.disabled = mission.done;
-
-        button.onclick = function() {
-            missions[index].done = true;
-            saveData();
-            renderMissions();
-        };
-
-        row.appendChild(name);
-        row.appendChild(button);
-        list.appendChild(row);
-    });
-
-    updateProgress();
+function showTab(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
 }
+document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
 
-function updateProgress() {
-    const completed = missions.filter(m => m.done).length;
-
-    const points = missions
-        .filter(m => m.done)
-        .reduce((total, m) => total + m.points, 0);
-
-    const percent = missions.length
-        ? Math.round(completed / missions.length * 100)
-        : 0;
-
-    document.getElementById("points").textContent = points;
-    document.getElementById("completed").textContent = completed;
-    document.getElementById("percent").textContent = percent + "%";
-
-    document.getElementById("progressText").textContent =
-        completed + " dari " + missions.length + " misi selesai";
-
-    document.getElementById("progressBar").style.width =
-        percent + "%";
-
-    let badges = [];
-
-    if (completed >= 1) {
-        badges.push("🌱 Berani Memulai");
-    }
-
-    if (completed >= 3) {
-        badges.push("🏅 Target Tercapai");
-    }
-
-    if (completed >= 5) {
-        badges.push("🔥 Konsisten Berusaha");
-    }
-
-    document.getElementById("badges").textContent =
-        badges.length ? badges.join(" | ") : "Belum ada lencana.";
+function checkQuiz(){
+  const answers={q1:'a',q2:'b',q3:'c',q4:'a',q5:'b'};
+  let score=0,unanswered=[];
+  Object.keys(answers).forEach((q,i)=>{
+    const chosen=document.querySelector('input[name="'+q+'"]:checked');
+    if(!chosen) unanswered.push(i+1);
+    else if(chosen.value===answers[q]) score++;
+  });
+  const box=document.getElementById('quizResult');
+  box.style.display='block';
+  if(unanswered.length){
+    box.textContent='Kamu belum menjawab nomor: '+unanswered.join(', ')+'. Lengkapi dahulu, ya.';
+  }else{
+    let note=score===5?'Hebat! Semua jawaban benar.':score>=3?'Bagus! Pelajari kembali materi yang belum kamu kuasai.':'Tetap semangat. Baca kembali materi, lalu coba lagi.';
+    box.textContent='Nilai kamu: '+score+'/5. '+note;
+  }
 }
-
-function addMission() {
-    const input = document.getElementById("task");
-    const title = input.value.trim();
-
-    if (title === "") {
-        alert("Silakan isi target belajar terlebih dahulu!");
-        return;
-    }
-
-    const points = Number(
-        document.getElementById("reward").value
-    );
-
-    missions.push({
-        title: title,
-        points: points,
-        done: false
-    });
-
-    input.value = "";
-
-    saveData();
-    renderMissions();
+function saveReflection(){
+  const data={};
+  ['r1','r2','r3','r4'].forEach(id=>data[id]=document.getElementById(id).value);
+  try{localStorage.setItem('temanBelajarReflection',JSON.stringify(data));document.getElementById('reflectionStatus').textContent='Refleksi berhasil disimpan di browser/perangkat ini.';}
+  catch(e){document.getElementById('reflectionStatus').textContent='Browser tidak mengizinkan penyimpanan. Kamu bisa menyalin jawabanmu terlebih dahulu.';}
 }
-
-function newQuote() {
-    const random = Math.floor(Math.random() * quotes.length);
-
-    document.getElementById("quote").textContent =
-        quotes[random];
+function loadReflection(){
+  try{
+    const data=JSON.parse(localStorage.getItem('temanBelajarReflection')||'{}');
+    ['r1','r2','r3','r4'].forEach(id=>{if(data[id])document.getElementById(id).value=data[id];});
+  }catch(e){}
 }
-
-function saveReflection() {
-    const text = document.getElementById("reflection").value;
-
-    if (!text.trim()) {
-        alert("Tuliskan refleksimu terlebih dahulu.");
-        return;
-    }
-
-    localStorage.setItem("refleksi", text);
-
-    document.getElementById("saved").textContent =
-        "Refleksi berhasil disimpan!";
+function clearReflection(){
+  ['r1','r2','r3','r4'].forEach(id=>document.getElementById(id).value='');
+  localStorage.removeItem('temanBelajarReflection');
+  document.getElementById('reflectionStatus').textContent='Isian refleksi telah dihapus dari browser ini.';
 }
-
-function makeNote() {
-    const text = document.getElementById("consultation").value.trim();
-
-    if (!text) {
-        alert("Tuliskan hal yang ingin dikonsultasikan.");
-        return;
-    }
-
-    const note = document.createElement("textarea");
-    note.value =
-        "CATATAN KONSULTASI GURU BK\n\n" + text;
-
-    document.body.appendChild(note);
-    note.select();
-
-    const copied = document.execCommand("copy");
-    note.remove();
-
-    document.getElementById("noteResult").textContent =
-        copied
-        ? "Catatan berhasil disalin. Kamu bisa menyampaikannya kepada Guru BK."
-        : "Catatan siap disalin secara manual.";
+function getContactMessage(){
+  const name=document.getElementById('studentName').value.trim()||'Siswa';
+  const message=document.getElementById('message').value.trim();
+  if(!message){document.getElementById('contactStatus').textContent='Tulis pesan yang ingin disampaikan terlebih dahulu.';return null;}
+  const teacher=document.getElementById('bkName').value.trim()||'Guru BK';
+  return 'Assalamu’alaikum, '+teacher+'. Perkenalkan, saya '+name+'. Saya ingin berkonsultasi mengenai kegiatan belajar saya.\\n\\n'+message+'\\n\\nTerima kasih.';
 }
-
-function saveData() {
-    localStorage.setItem(
-        "temanBelajarMissions",
-        JSON.stringify(missions)
-    );
+function openWhatsApp(){
+  const msg=getContactMessage();if(!msg)return;
+  const phone=document.getElementById('bkPhone').value.replace(/[^0-9]/g,'');
+  if(!phone){document.getElementById('contactStatus').textContent='Masukkan nomor WhatsApp resmi Guru BK terlebih dahulu.';return;}
+  window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(msg),'_blank');
 }
-
-function loadData() {
-    const saved = localStorage.getItem("temanBelajarMissions");
-
-    if (saved) {
-        try {
-            const parsed = JSON.parse(saved);
-
-            if (Array.isArray(parsed)) {
-                missions = parsed;
-            }
-        } catch (error) {
-            console.log("Data misi belum dapat dibaca.");
-        }
-    }
-
-    const reflection = localStorage.getItem("refleksi");
-
-    if (reflection) {
-        document.getElementById("reflection").value =
-            reflection;
-    }
+function openEmail(){
+  const msg=getContactMessage();if(!msg)return;
+  const email=document.getElementById('bkEmail').value.trim();
+  if(!email){document.getElementById('contactStatus').textContent='Masukkan alamat email resmi Guru BK terlebih dahulu.';return;}
+  const subject=encodeURIComponent('Permohonan Konsultasi BK Bidang Belajar');
+  window.location.href='mailto:'+email+'?subject='+subject+'&body='+encodeURIComponent(msg);
 }
-
-loadData();
-renderMissions();
-
+loadReflection();
 </script>
-
 </body>
 </html>
