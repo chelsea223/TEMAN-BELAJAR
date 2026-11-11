@@ -43,20 +43,57 @@ hr{border:0;border-top:1px solid #eeeef5;margin:20px 0}
 </head>
   <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-
   const SUPABASE_URL = 'https://jmkoqomxxzddclelaedg.supabase.co';
   const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_7RIFP-NzgvLaOBweVB1j4g_KWKkRr6h';
-
   const supabase = createClient(
     SUPABASE_URL,
     SUPABASE_PUBLISHABLE_KEY
   );
-
   window.supabaseClient = supabase;
-
   console.log('Supabase berhasil dihubungkan!');
 </script>
 <body>
+  <section id="auth-section" class="auth-container">
+  <div class="auth-card">
+    <h2>🌟 TEMAN BELAJAR</h2>
+    <p>Tempat seru untuk mengatur perjalanan belajarmu!</p>
+
+    <div id="login-form">
+      <h3>Selamat Datang!</h3>
+      <p>Silakan masuk ke akunmu.</p>
+
+      <input type="email" id="login-email" placeholder="Email">
+      <input type="password" id="login-password" placeholder="Kata sandi">
+
+      <button type="button" onclick="loginUser()">Masuk</button>
+
+      <p>Belum punya akun?
+        <a href="#" onclick="showRegister(); return false;">Daftar sekarang</a>
+      </p>
+    </div>
+
+    <div id="register-form" style="display:none;">
+      <h3>Buat Akun Baru</h3>
+
+      <input type="text" id="register-name" placeholder="Nama lengkap">
+      <input type="email" id="register-email" placeholder="Email">
+      <input type="password" id="register-password" placeholder="Kata sandi">
+
+      <label for="register-role">Jenis akun</label>
+      <select id="register-role">
+        <option value="student">Siswa</option>
+      </select>
+
+      <button type="button" onclick="registerUser()">Daftar</button>
+
+      <p>Sudah punya akun?
+        <a href="#" onclick="showLogin(); return false;">Masuk</a>
+      </p>
+    </div>
+
+    <p id="auth-message"></p>
+  </div>
+</section>
 <header>
   <h1>🌈 TEMAN BELAJAR</h1>
   <p>Temukan Motivasi, Atur Belajar, Raih Kemajuan</p>
