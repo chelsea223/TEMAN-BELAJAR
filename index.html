@@ -51,6 +51,56 @@ hr{border:0;border-top:1px solid #eeeef5;margin:20px 0}
   );
   window.supabaseClient = supabase;
   console.log('Supabase berhasil dihubungkan!');
+  function showRegister() {
+  document.getElementById('login-form').style.display = 'none';
+  document.getElementById('register-form').style.display = 'block';
+}
+
+function showLogin() {
+  document.getElementById('register-form').style.display = 'none';
+  document.getElementById('login-form').style.display = 'block';
+}
+
+async function registerUser() {
+  const name = document.getElementById('register-name').value.trim();
+  const email = document.getElementById('register-email').value.trim();
+  const password = document.getElementById('register-password').value;
+  const message = document.getElementById('auth-message');
+
+  if (!name || !email || !password) {
+    message.textContent = 'Mohon lengkapi semua data.';
+    return;
+  }
+
+  if (password.length < 8) {
+    message.textContent = 'Kata sandi minimal 8 karakter.';
+    return;
+  }
+
+  message.textContent = 'Sedang membuat akun...';
+
+  const { data, error } = await supabase.auth.signUp({
+    email: email,
+    password: password,
+    options: {
+      data: {
+        full_name: name
+      }
+    }
+  });
+
+  if (error) {
+    message.textContent = 'Pendaftaran gagal: ' + error.message;
+    return;
+  }
+
+  message.textContent =
+    'Pendaftaran berhasil! Silakan periksa email jika diminta konfirmasi.';
+}
+
+window.showRegister = showRegister;
+window.showLogin = showLogin;
+window.registerUser = registerUser;  
 </script>
 <body>
   <section id="auth-section" class="auth-container">
@@ -169,7 +219,6 @@ hr{border:0;border-top:1px solid #eeeef5;margin:20px 0}
     <div id="quizResult" class="result" aria-live="polite"></div>
   </div>
 </section>
-
 <section id="refleksi" class="panel">
   <div class="card">
     <h2>✍️ Refleksi Belajarku</h2>
@@ -187,7 +236,6 @@ hr{border:0;border-top:1px solid #eeeef5;margin:20px 0}
     <p id="reflectionStatus" class="small" aria-live="polite"></p>
   </div>
 </section>
-
 <section id="gurubk" class="panel">
   <div class="card">
     <h2>💬 Hubungi Guru BK</h2>
@@ -210,7 +258,6 @@ hr{border:0;border-top:1px solid #eeeef5;margin:20px 0}
 </section>
 </main>
 <footer>TEMAN BELAJAR · Media pendukung layanan Bimbingan dan Konseling bidang belajar</footer>
-
 <script>
 function showTab(id){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
@@ -219,7 +266,6 @@ function showTab(id){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
-
 function checkQuiz(){
   const answers={q1:'a',q2:'b',q3:'c',q4:'a',q5:'b'};
   let score=0,unanswered=[];
