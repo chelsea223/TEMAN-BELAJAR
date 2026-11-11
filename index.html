@@ -100,7 +100,36 @@ async function registerUser() {
 
 window.showRegister = showRegister;
 window.showLogin = showLogin;
-window.registerUser = registerUser;  
+window.registerUser = registerUser; 
+async function loginUser() {
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  const message = document.getElementById('auth-message');
+
+  if (!email || !password) {
+    message.textContent = 'Masukkan email dan kata sandi.';
+    return;
+  }
+
+  message.textContent = 'Sedang masuk...';
+
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: email,
+    password: password
+  });
+
+  if (error) {
+    message.textContent = 'Login gagal: ' + error.message;
+    return;
+  }
+
+  message.textContent = 'Login berhasil! Selamat datang di TEMAN BELAJAR.';
+
+  document.getElementById('auth-section').style.display = 'none';
+  document.querySelector('header').style.display = 'block';
+}
+
+window.loginUser = loginUser;    
 </script>
 <body>
   <section id="auth-section" class="auth-container">
