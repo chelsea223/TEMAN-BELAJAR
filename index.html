@@ -123,10 +123,34 @@ async function loginUser() {
     return;
   }
 
-  message.textContent = 'Login berhasil! Selamat datang di TEMAN BELAJAR.';
+  // Ambil data profil pengguna
+const { data: profile, error: profileError } = await supabase
+  .from('profiles')
+  .select('full_name, role, school_id')
+  .eq('id', data.user.id)
+  .single();
 
-  document.getElementById('auth-section').style.display = 'none';
-  document.querySelector('header').style.display = 'block';
+// Periksa apakah profil berhasil ditemukan
+if (profileError) {
+  message.textContent = 'Profil tidak ditemukan: ' + profileError.message;
+  return;
+}
+
+// Pastikan jenis akun sesuai
+if (profile.role !== 'student' && profile.role !== 'counselor') {
+  message.textContent = 'Jenis akun tidak dikenali.';
+  return;
+}
+
+// Tampilkan informasi akun untuk pengujian
+console.log('Profil pengguna:', profile);
+message.textContent = 'Login berhasil! Jenis akun: ' + profile.role;
+
+document.getElementById('auth-section').style.display = 'none';
+document.querySelector('header').style.display = 'block';
+
+  
+  
 }
 
 window.loginUser = loginUser;    
