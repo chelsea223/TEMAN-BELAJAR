@@ -189,21 +189,40 @@ function selesaikanMisi(checkbox, poin) {
 }
 
 window.selesaikanMisi = selesaikanMisi;
- function simpanRefleksi() {
+ async function simpanRefleksi() {
   const isi = document.getElementById('isi-refleksi').value.trim();
   const pesan = document.getElementById('pesan-refleksi');
 
-  if (isi === '') {
+  if (!isi) {
     pesan.textContent = 'Silakan tulis refleksimu terlebih dahulu.';
     return;
   }
 
-  localStorage.setItem('refleksi-belajar', isi);
+  const { data: { user }, error: userError } =
+    await supabase.auth.getUser();
 
-  pesan.textContent = 'Refleksi berhasil disimpan!';
+  if (userError || !user) {
+    pesan.textContent = 'Silakan login kembali.';
+    return;
+  }
+
+  const { error } = await supabase
+    .from('reflections')
+    .insert({
+      student_id: user.id,
+      content: isi
+    });
+
+  if (error) {
+    console.error('Gagal menyimpan refleksi:', error);
+    pesan.textContent = 'Refleksi gagal disimpan: ' + error.message;
+    return;
+  }
+
+  pesan.textContent = 'Refleksi berhasil disimpan ke database!';
 }
 
-window.simpanRefleksi = simpanRefleksi;   
+window.simpanRefleksi = simpanRefleksi;
 </script>
 <body>
   <section id="auth-section" class="auth-container">
