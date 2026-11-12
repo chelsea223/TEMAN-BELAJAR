@@ -166,19 +166,29 @@ if (profile.role === 'student') {
 }
 
 window.loginUser = loginUser;
-    let totalPoin = 0;
+let totalPoin = 0;
+let totalMisiSelesai = 0;
 
 function selesaikanMisi(checkbox, poin) {
   if (checkbox.checked) {
     totalPoin += poin;
+    totalMisiSelesai++;
   } else {
     totalPoin -= poin;
+    totalMisiSelesai--;
   }
 
   document.getElementById('total-poin').textContent = totalPoin;
+
+  const persentase = (totalMisiSelesai / 4) * 100;
+
+  document.getElementById('jumlah-misi').textContent = totalMisiSelesai;
+  document.getElementById('bar-progres').style.width = persentase + '%';
+  document.getElementById('persentase-progres').textContent =
+    persentase + '% selesai';
 }
 
-window.selesaikanMisi = selesaikanMisi;
+window.selesaikanMisi = selesaikanMisi;    
 </script>
 <body>
   <section id="auth-section" class="auth-container">
@@ -275,7 +285,13 @@ window.selesaikanMisi = selesaikanMisi;
 
   <div class="card">
     <h3>📈 Progres Belajar</h3>
-    <p>Perkembangan belajarmu akan ditampilkan di sini.</p>
+<p>Misi yang diselesaikan: <strong id="jumlah-misi">0</strong> dari 4 misi</p>
+
+<div style="background:#eee; border-radius:10px; height:20px;">
+  <div id="bar-progres" style="background:#4caf50; width:0%; height:20px; border-radius:10px;"></div>
+</div>
+
+<p id="persentase-progres">0% selesai</p>
   </div>
 
   <div class="card">
