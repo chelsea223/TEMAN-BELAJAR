@@ -165,7 +165,20 @@ if (profile.role === 'student') {
   
 }
 
-window.loginUser = loginUser;    
+window.loginUser = loginUser;
+    let totalPoin = 0;
+
+function selesaikanMisi(checkbox, poin) {
+  if (checkbox.checked) {
+    totalPoin += poin;
+  } else {
+    totalPoin -= poin;
+  }
+
+  document.getElementById('total-poin').textContent = totalPoin;
+}
+
+window.selesaikanMisi = selesaikanMisi;
 </script>
 <body>
   <section id="auth-section" class="auth-container">
@@ -221,12 +234,43 @@ window.loginUser = loginUser;
 
   <div class="card">
     <h3>🎯 Misi Belajarku</h3>
-    <p>Belum ada misi belajar. Ayo mulai perjalanan belajarmu!</p>
+<p id="pesan-misi">Ayo selesaikan misi belajarmu dan kumpulkan poin!</p>
+
+<div class="mission-item">
+  <label>
+    <input type="checkbox" onchange="selesaikanMisi(this, 10)">
+    Membuat jadwal belajar harian (+10 poin)
+  </label>
+</div>
+
+<div class="mission-item">
+  <label>
+    <input type="checkbox" onchange="selesaikanMisi(this, 10)">
+    Membaca materi selama 20 menit (+10 poin)
+  </label>
+</div>
+
+<div class="mission-item">
+  <label>
+    <input type="checkbox" onchange="selesaikanMisi(this, 15)">
+    Mengerjakan kuis pembelajaran (+15 poin)
+  </label>
+</div>
+
+<div class="mission-item">
+  <label>
+    <input type="checkbox" onchange="selesaikanMisi(this, 15)">
+    Menulis refleksi belajar (+15 poin)
+  </label>
+</div>
+</div>
+
+<div class="card">
   </div>
 
   <div class="card">
-    <h3>⭐ Poin Belajar</h3>
-    <p>Poin kamu akan ditampilkan di sini.</p>
+   <h3>⭐ Poin Belajar</h3>
+<p>Jumlah poin kamu: <strong id="total-poin">0</strong> poin</p> 
   </div>
 
   <div class="card">
