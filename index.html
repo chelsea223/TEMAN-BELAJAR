@@ -188,7 +188,22 @@ function selesaikanMisi(checkbox, poin) {
     persentase + '% selesai';
 }
 
-window.selesaikanMisi = selesaikanMisi;    
+window.selesaikanMisi = selesaikanMisi;
+ function simpanRefleksi() {
+  const isi = document.getElementById('isi-refleksi').value.trim();
+  const pesan = document.getElementById('pesan-refleksi');
+
+  if (isi === '') {
+    pesan.textContent = 'Silakan tulis refleksimu terlebih dahulu.';
+    return;
+  }
+
+  localStorage.setItem('refleksi-belajar', isi);
+
+  pesan.textContent = 'Refleksi berhasil disimpan!';
+}
+
+window.simpanRefleksi = simpanRefleksi;   
 </script>
 <body>
   <section id="auth-section" class="auth-container">
@@ -296,7 +311,19 @@ window.selesaikanMisi = selesaikanMisi;
 
   <div class="card">
     <h3>📝 Refleksi Belajar</h3>
-    <p>Ceritakan pengalaman dan perkembangan belajarmu.</p>
+
+<p>Bagaimana pengalaman belajarmu hari ini?</p>
+
+<textarea
+  id="isi-refleksi"
+  placeholder="Tuliskan pengalaman, kesulitan, dan hal yang ingin kamu perbaiki..."
+  rows="5"
+  style="width:100%; padding:10px; border-radius:8px;">
+</textarea>
+
+<button onclick="simpanRefleksi()">Simpan Refleksi</button>
+
+<p id="pesan-refleksi"></p>
   </div>
 </section>  
 <nav>
