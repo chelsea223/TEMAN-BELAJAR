@@ -148,7 +148,19 @@ message.textContent = 'Login berhasil! Jenis akun: ' + profile.role;
 
 document.getElementById('auth-section').style.display = 'none';
 document.querySelector('header').style.display = 'block';
+if (profile.role === 'student') {
+  const dashboard = document.getElementById('dashboard-siswa');
+  const namaSiswa = document.getElementById('nama-siswa');
 
+  if (dashboard && namaSiswa) {
+    namaSiswa.textContent = profile.full_name || 'Siswa';
+    dashboard.style.display = 'block';
+    document.querySelector('nav').style.display = 'none';
+    document.querySelector('main').style.display = 'none';
+  } else {
+    console.error('Dashboard Siswa tidak ditemukan.');
+  }
+}
   
   
 }
