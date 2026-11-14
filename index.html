@@ -164,7 +164,17 @@ if (profile.role === 'student') {
   
   
 }
+else if (profile.role === 'counselor') {
+  const dashboardGuru = document.getElementById('dashboard-guru');
 
+  if (dashboardGuru) {
+    dashboardGuru.style.display = 'block';
+    document.querySelector('nav').style.display = 'none';
+    document.querySelector('main').style.display = 'none';
+  } else {
+    console.error('Dashboard Guru BK tidak ditemukan.');
+  }
+}
 window.loginUser = loginUser;
 let totalPoin = 0;
 let totalMisiSelesai = 0;
