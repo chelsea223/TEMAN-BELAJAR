@@ -82,11 +82,12 @@ async function registerUser() {
   const { data, error } = await supabase.auth.signUp({
     email: email,
     password: password,
-    options: {
-      data: {
-        full_name: name
-      }
-    }
+   options: {
+  data: {
+    full_name: name
+  },
+  emailRedirectTo: 'https://chelsea223.github.io/TEMAN-BELAJAR/'
+} 
   });
 
   if (error) {
