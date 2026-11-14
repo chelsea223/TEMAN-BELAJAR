@@ -197,6 +197,7 @@ else if (profile.role === 'counselor') {
 
   if (dashboardGuru) {
     dashboardGuru.style.display = 'block';
+    await tampilkanDataSiswa();
     document.querySelector('nav').style.display = 'none';
     document.querySelector('main').style.display = 'none';
   } else {
@@ -264,6 +265,31 @@ window.selesaikanMisi = selesaikanMisi;
 }
 
 window.simpanRefleksi = simpanRefleksi;
+ async function tampilkanDataSiswa() {
+  const jumlahSiswa = document.getElementById('jumlah-siswa');
+  const daftarSiswa = document.getElementById('daftar-siswa');
+
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('id, full_name')
+    .eq('role', 'student');
+
+  if (error) {
+    console.error('Gagal mengambil data siswa:', error);
+    jumlahSiswa.textContent = 'Gagal memuat data siswa: ' + error.message;
+    return;
+  }
+
+  jumlahSiswa.textContent = 'Jumlah siswa: ' + data.length;
+
+  daftarSiswa.innerHTML = '';
+
+  data.forEach((siswa) => {
+    const item = document.createElement('p');
+    item.textContent = siswa.full_name || 'Nama belum diisi';
+    daftarSiswa.appendChild(item);
+  });
+}   
 </script>
 <body>
   <section id="auth-section" class="auth-container">
@@ -398,9 +424,10 @@ window.simpanRefleksi = simpanRefleksi;
   <p>Selamat datang di Dashboard Guru BK TEMAN BELAJAR.</p>
 
   <div class="card">
-    <h3>👥 Data Siswa</h3>
-    <p id="jumlah-siswa">Jumlah siswa: 0</p>
-  </div>
+  <h3>👥 Data Siswa</h3>
+  <p id="jumlah-siswa">Memuat data siswa...</p>
+  <div id="daftar-siswa"></div>
+</div>
 
   <div class="card">
     <h3>📈 Pemantauan Progres Siswa</h3>
