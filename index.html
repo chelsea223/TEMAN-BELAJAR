@@ -98,7 +98,35 @@ async function registerUser() {
   message.textContent =
     'Pendaftaran berhasil! Silakan periksa email jika diminta konfirmasi.';
 }
+async function kirimUlangKonfirmasi() {
+  const email = document.getElementById('register-email').value.trim();
+  const message = document.getElementById('auth-message');
 
+  if (!email) {
+    message.textContent = 'Masukkan email terlebih dahulu.';
+    return;
+  }
+
+  message.textContent = 'Sedang mengirim ulang konfirmasi...';
+
+  const { error } = await supabase.auth.resend({
+    type: 'signup',
+    email: email,
+    options: {
+      emailRedirectTo: 'https://chelsea223.github.io/TEMAN-BELAJAR/'
+    }
+  });
+
+  if (error) {
+    message.textContent = 'Gagal mengirim ulang: ' + error.message;
+    return;
+  }
+
+  message.textContent =
+    'Permintaan konfirmasi berhasil dikirim. Silakan periksa Gmail.';
+}
+
+window.kirimUlangKonfirmasi = kirimUlangKonfirmasi;
 window.showRegister = showRegister;
 window.showLogin = showLogin;
 window.registerUser = registerUser; 
