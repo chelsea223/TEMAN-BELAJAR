@@ -127,6 +127,8 @@ async function kirimUlangKonfirmasi() {
 }
 
 window.kirimUlangKonfirmasi = kirimUlangKonfirmasi;
+ document.getElementById('btn-kirim-ulang')
+  .addEventListener('click', kirimUlangKonfirmasi);   
 window.showRegister = showRegister;
 window.showLogin = showLogin;
 window.registerUser = registerUser; 
@@ -296,7 +298,7 @@ window.simpanRefleksi = simpanRefleksi;
       </select>
 
       <button type="button" onclick="registerUser()">Daftar</button>
-<button type="button" onclick="kirimUlangKonfirmasi()">
+<button type="button" id="btn-kirim-ulang">
   Kirim Ulang Konfirmasi Email
 </button>
       <p>Sudah punya akun?
