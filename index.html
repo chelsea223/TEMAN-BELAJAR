@@ -198,6 +198,7 @@ else if (profile.role === 'counselor') {
   if (dashboardGuru) {
     dashboardGuru.style.display = 'block';
     await tampilkanDataSiswa();
+    await tampilkanRefleksi();
     document.querySelector('nav').style.display = 'none';
     document.querySelector('main').style.display = 'none';
   } else {
@@ -289,7 +290,37 @@ window.simpanRefleksi = simpanRefleksi;
     item.textContent = siswa.full_name || 'Nama belum diisi';
     daftarSiswa.appendChild(item);
   });
-}   
+}  
+window.tampilkanDataSiswa = tampilkanDataSiswa;
+
+async function tampilkanRefleksi() {
+  const daftar = document.getElementById('daftar-refleksi');
+
+  const { data, error } = await supabase
+    .from('reflections')
+    .select('student_id, content');
+
+  if (error) {
+    console.error('Gagal mengambil refleksi:', error);
+    daftar.textContent = 'Gagal memuat refleksi: ' + error.message;
+    return;
+  }
+
+  daftar.innerHTML = '';
+
+  if (!data || data.length === 0) {
+    daftar.textContent = 'Belum ada refleksi dari siswa.';
+    return;
+  }
+
+  data.forEach((refleksi) => {
+    const item = document.createElement('p');
+    item.textContent = refleksi.content;
+    daftar.appendChild(item);
+  });
+}
+
+window.tampilkanRefleksi = tampilkanRefleksi;    
 </script>
 <body>
   <section id="auth-section" class="auth-container">
