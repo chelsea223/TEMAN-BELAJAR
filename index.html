@@ -186,6 +186,7 @@ if (profile.role === 'student') {
   if (dashboard && namaSiswa) {
     namaSiswa.textContent = profile.full_name || 'Siswa';
     dashboard.style.display = 'block';
+    await muatProgresSiswa();
     document.querySelector('nav').style.display = 'none';
     document.querySelector('main').style.display = 'none';
   } else {
@@ -211,27 +212,122 @@ else if (profile.role === 'counselor') {
 window.loginUser = loginUser;
 let totalPoin = 0;
 let totalMisiSelesai = 0;
+let completedMissions = [false, false, false, false];
 
-function selesaikanMisi(checkbox, poin) {
-  if (checkbox.checked) {
-    totalPoin += poin;
-    totalMisiSelesai++;
-  } else {
-    totalPoin -= poin;
-    totalMisiSelesai--;
-  }
+async function selesaikanMisi(checkbox, poin) {
+  const kotakMisi = Array.from(
+    document.querySelectorAll(
+      '.mission-item input[type="checkbox"]'
+    )
+  );
+
+  const index = kotakMisi.indexOf(checkbox);
+
+  if (index === -1) return;
+
+  completedMissions[index] = checkbox.checked;
+
+  const poinMisi = [10, 10, 15, 15];
+
+  totalPoin = completedMissions.reduce(
+    (total, selesai, i) =>
+      total + (selesai ? poinMisi[i] : 0), 0
+  );
+
+  totalMisiSelesai = completedMissions.filter(Boolean).length;
 
   document.getElementById('total-poin').textContent = totalPoin;
+  document.getElementById('jumlah-misi').textContent =
+    totalMisiSelesai;
 
   const persentase = (totalMisiSelesai / 4) * 100;
 
-  document.getElementById('jumlah-misi').textContent = totalMisiSelesai;
-  document.getElementById('bar-progres').style.width = persentase + '%';
+  document.getElementById('bar-progres').style.width =
+    persentase + '%';
+
   document.getElementById('persentase-progres').textContent =
     persentase + '% selesai';
+
+  const { data: { user }, error: userError } =
+    await supabase.auth.getUser();
+
+  if (userError || !user) {
+    console.error('Pengguna belum login:', userError);
+    return;
+  }
+
+  const { error } = await supabase
+    .from('student_progress')
+    .upsert({
+      student_id: user.id,
+      total_points: totalPoin,
+      missions_completed: totalMisiSelesai,
+      completed_missions: completedMissions,
+      updated_at: new Date().toISOString()
+    }, {
+      onConflict: 'student_id'
+    });
+
+  if (error) {
+    console.error('Gagal menyimpan progres:', error);
+  } else {
+    console.log('Progres berhasil disimpan!');
+  }
 }
 
 window.selesaikanMisi = selesaikanMisi;
+async function muatProgresSiswa() {
+  const { data: { user }, error: userError } =
+    await supabase.auth.getUser();
+
+  if (userError || !user) return;
+
+  const { data, error } = await supabase
+    .from('student_progress')
+    .select('total_points, missions_completed, completed_missions')
+    .eq('student_id', user.id)
+    .maybeSingle();
+
+  if (error) {
+    console.error('Gagal memuat progres:', error);
+    return;
+  }
+
+  if (!data) return;
+
+  completedMissions = Array.isArray(data.completed_missions)
+    ? data.completed_missions
+    : [false, false, false, false];
+
+  totalMisiSelesai = completedMissions.filter(Boolean).length;
+
+  const poinMisi = [10, 10, 15, 15];
+
+  totalPoin = completedMissions.reduce(
+    (total, selesai, index) =>
+      total + (selesai ? poinMisi[index] : 0), 0
+  );
+
+  const kotakMisi = document.querySelectorAll(
+    '.mission-item input[type="checkbox"]'
+  );
+
+  kotakMisi.forEach((kotak, index) => {
+    kotak.checked = !!completedMissions[index];
+  });
+
+  document.getElementById('total-poin').textContent = totalPoin;
+  document.getElementById('jumlah-misi').textContent =
+    totalMisiSelesai;
+
+  const persentase = (totalMisiSelesai / 4) * 100;
+
+  document.getElementById('bar-progres').style.width =
+    persentase + '%';
+
+  document.getElementById('persentase-progres').textContent =
+    persentase + '% selesai';
+}
  async function simpanRefleksi() {
   const isi = document.getElementById('isi-refleksi').value.trim();
   const pesan = document.getElementById('pesan-refleksi');
