@@ -183,13 +183,17 @@ if (profile.role === 'student') {
   const dashboard = document.getElementById('dashboard-siswa');
   const namaSiswa = document.getElementById('nama-siswa');
 
-  if (dashboard && namaSiswa) {
-    namaSiswa.textContent = profile.full_name || 'Siswa';
-    dashboard.style.display = 'block';
-    await muatProgresSiswa();
-    document.querySelector('nav').style.display = 'none';
-    document.querySelector('main').style.display = 'none';
-  } else {
+ if (dashboard && namaSiswa) {
+  namaSiswa.textContent = profile.full_name || 'Siswa';
+  dashboard.style.display = 'block';
+
+  await muatProgresSiswa();
+
+  document.querySelector('nav').style.display = 'block';
+  document.querySelector('main').style.display = 'block';
+
+  showTab('beranda');
+} 
     console.error('Dashboard Siswa tidak ditemukan.');
   }
 }
@@ -467,80 +471,85 @@ window.tampilkanRefleksi = tampilkanRefleksi;
   <p>Temukan Motivasi, Atur Belajar, Raih Kemajuan</p>
 </header>
 <section id="dashboard-siswa" style="display: none; padding: 20px;">
-  <div class="welcome">
-    <h2>Halo, <span id="nama-siswa">Siswa</span>! 👋</h2>
-    <p>Selamat datang di Dashboard Siswa TEMAN BELAJAR.</p>
-  </div>
 
-  <div class="card">
-    <h3>🎯 Misi Belajarku</h3>
-<p id="pesan-misi">Ayo selesaikan misi belajarmu dan kumpulkan poin!</p>
+  <!-- BERANDA -->
+  <section id="beranda">
+    <div class="welcome">
+      <h2>Halo, <span id="nama-siswa">Siswa</span>! 👋</h2>
+      <p>Selamat datang di Dashboard Siswa TEMAN BELAJAR.</p>
+    </div>
+  </section>
 
-<div class="mission-item">
-  <label>
-    <input type="checkbox" onchange="selesaikanMisi(this, 10)">
-    Membuat jadwal belajar harian (+10 poin)
-  </label>
-</div>
+  <!-- MISI BELAJAR -->
+  <section id="misi" style="display:none;">
+    <div class="card">
+      <h3>🎯 Misi Belajarku</h3>
+      <p id="pesan-misi">Ayo selesaikan misi belajarmu dan kumpulkan poin!</p>
 
-<div class="mission-item">
-  <label>
-    <input type="checkbox" onchange="selesaikanMisi(this, 10)">
-    Membaca materi selama 20 menit (+10 poin)
-  </label>
-</div>
+      <div class="mission-item">
+        <label>
+          <input type="checkbox" onchange="selesaikanMisi(this, 10)">
+          Membuat jadwal belajar harian (+10 poin)
+        </label>
+      </div>
 
-<div class="mission-item">
-  <label>
-    <input type="checkbox" onchange="selesaikanMisi(this, 15)">
-    Mengerjakan kuis pembelajaran (+15 poin)
-  </label>
-</div>
+      <div class="mission-item">
+        <label>
+          <input type="checkbox" onchange="selesaikanMisi(this, 10)">
+          Membaca materi selama 20 menit (+10 poin)
+        </label>
+      </div>
 
-<div class="mission-item">
-  <label>
-    <input type="checkbox" onchange="selesaikanMisi(this, 15)">
-    Menulis refleksi belajar (+15 poin)
-  </label>
-</div>
-</div>
+      <div class="mission-item">
+        <label>
+          <input type="checkbox" onchange="selesaikanMisi(this, 15)">
+          Mengerjakan kuis pembelajaran (+15 poin)
+        </label>
+      </div>
 
-<div class="card">
-  </div>
+      <div class="mission-item">
+        <label>
+          <input type="checkbox" onchange="selesaikanMisi(this, 15)">
+          Menulis refleksi belajar (+15 poin)
+        </label>
+      </div>
+    </div>
 
-  <div class="card">
-   <h3>⭐ Poin Belajar</h3>
-<p>Jumlah poin kamu: <strong id="total-poin">0</strong> poin</p> 
-  </div>
+    <div class="card">
+      <h3>⭐ Poin Belajar</h3>
+      <p>Jumlah poin kamu: <strong id="total-poin">0</strong> poin</p>
+    </div>
 
-  <div class="card">
-    <h3>📈 Progres Belajar</h3>
-<p>Misi yang diselesaikan: <strong id="jumlah-misi">0</strong> dari 4 misi</p>
+    <div class="card">
+      <h3>📈 Progres Belajar</h3>
+      <p>Misi yang diselesaikan: <strong id="jumlah-misi">0</strong> dari 4 misi</p>
 
-<div style="background:#eee; border-radius:10px; height:20px;">
-  <div id="bar-progres" style="background:#4caf50; width:0%; height:20px; border-radius:10px;"></div>
-</div>
+      <div style="background:#eee; border-radius:10px; height:20px;">
+        <div id="bar-progres" style="background:#4caf50; width:0%; height:20px; border-radius:10px;"></div>
+      </div>
 
-<p id="persentase-progres">0% selesai</p>
-  </div>
+      <p id="persentase-progres">0% selesai</p>
+    </div>
+  </section>
 
-  <div class="card">
-    <h3>📝 Refleksi Belajar</h3>
+  <!-- REFLEKSI -->
+  <section id="refleksi" style="display:none;">
+    <div class="card">
+      <h3>📝 Refleksi Belajar</h3>
+      <p>Bagaimana pengalaman belajarmu hari ini?</p>
 
-<p>Bagaimana pengalaman belajarmu hari ini?</p>
+      <textarea
+        id="isi-refleksi"
+        placeholder="Tuliskan pengalaman belajarmu di sini..."
+        rows="5"
+        style="display:block; width:100%; min-height:120px; padding:12px; background-color:white; color:black; box-sizing:border-box;">
+      </textarea>
 
-<textarea
-  id="isi-refleksi"
-  placeholder="Tuliskan pengalaman belajarmu di sini..."
-  rows="5"
-  style="display:block; width:100%; min-height:120px; padding:12px; background-color:white; color:black; position:relative; z-index:10; pointer-events:auto; cursor:text; box-sizing:border-box;">
-</textarea>
+      <button onclick="simpanRefleksi()">Simpan Refleksi</button>
+      <p id="pesan-refleksi"></p>
+    </div>
+  </section>
 
-<button onclick="simpanRefleksi()">Simpan Refleksi</button>
-
-<p id="pesan-refleksi"></p>
-  </div>
-</section>  
 </section>
 
 <!-- DASHBOARD GURU BK -->
@@ -574,10 +583,10 @@ window.tampilkanRefleksi = tampilkanRefleksi;
   </div>
 
 </section>
-
-<nav>  
+  
 <nav>
   <button class="active" data-tab="beranda">Beranda</button>
+  <button data-tab="misi">🎯 Misi Belajar</button>
   <button data-tab="materi">Materi</button>
   <button data-tab="kuis">Kuis</button>
   <button data-tab="refleksi">Refleksi</button>
@@ -647,7 +656,7 @@ window.tampilkanRefleksi = tampilkanRefleksi;
     <div id="quizResult" class="result" aria-live="polite"></div>
   </div>
 </section>
-<section id="refleksi" class="panel">
+<section id="refleksi-lama" class="panel">
   <div class="card">
     <h2>✍️ Refleksi Belajarku</h2>
     <p>Luangkan waktu untuk menjawab pertanyaan berikut dengan jujur. Jawaban tersimpan di browser/perangkat yang sedang kamu gunakan.</p>
@@ -687,28 +696,80 @@ window.tampilkanRefleksi = tampilkanRefleksi;
 </main>
 <footer>TEMAN BELAJAR · Media pendukung layanan Bimbingan dan Konseling bidang belajar</footer>
 <script>
-function showTab(id){
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));
-  document.getElementById(id).classList.add('active');
-  window.scrollTo({top:0,behavior:'smooth'});
+function showTab(id) {
+  const dashboard = document.getElementById('dashboard-siswa');
+
+  if (dashboard && dashboard.style.display !== 'none') {
+    dashboard.querySelectorAll(':scope > section').forEach(section => {
+      section.style.display = 'none';
+    });
+
+    const halamanSiswa = dashboard.querySelector('#' + id);
+
+    if (halamanSiswa) {
+      halamanSiswa.style.display = 'block';
+    }
+  }
+
+  document.querySelectorAll('.panel').forEach(panel => {
+    panel.classList.remove('active');
+  });
+
+  const halaman = document.getElementById(id);
+
+  if (halaman && halaman.classList.contains('panel')) {
+    halaman.classList.add('active');
+  }
+
+  document.querySelectorAll('nav button').forEach(button => {
+    button.classList.toggle('active', button.dataset.tab === id);
+  });
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
-function checkQuiz(){
-  const answers={q1:'a',q2:'b',q3:'c',q4:'a',q5:'b'};
-  let score=0,unanswered=[];
-  Object.keys(answers).forEach((q,i)=>{
-    const chosen=document.querySelector('input[name="'+q+'"]:checked');
-    if(!chosen) unanswered.push(i+1);
-    else if(chosen.value===answers[q]) score++;
-  });
-  const box=document.getElementById('quizResult');
-  box.style.display='block';
-  if(unanswered.length){
-    box.textContent='Kamu belum menjawab nomor: '+unanswered.join(', ')+'. Lengkapi dahulu, ya.';
-  }else{
+
     let note=score===5?'Hebat! Semua jawaban benar.':score>=3?'Bagus! Pelajari kembali materi yang belum kamu kuasai.':'Tetap semangat. Baca kembali materi, lalu coba lagi.';
     box.textContent='Nilai kamu: '+score+'/5. '+note;
+  function checkQuiz(){
+  const answers = {
+    q1:'a',
+    q2:'b',
+    q3:'c',
+    q4:'a',
+    q5:'b'
+  };
+
+  let score = 0;
+  let unanswered = [];
+
+  Object.keys(answers).forEach((q, i) => {
+    const chosen = document.querySelector(
+      'input[name="' + q + '"]:checked'
+    );
+
+    if (!chosen) {
+      unanswered.push(i + 1);
+    } else if (chosen.value === answers[q]) {
+      score++;
+    }
+  });
+
+  const box = document.getElementById('quiz-result');
+
+  if (!box) return;
+
+  if (unanswered.length) {
+    box.textContent = 'Kamu belum menjawab nomor: ' +
+      unanswered.join(', ') + '. Lengkapi dahulu, ya.';
+  } else {
+    let note = score === 5
+      ? 'Hebat! Semua jawaban benar.'
+      : score >= 3
+        ? 'Bagus! Pelajari kembali materi yang belum kamu kuasai.'
+        : 'Tetap semangat. Baca kembali materi, lalu coba lagi.';
+
+    box.textContent = 'Nilai kamu: ' + score + '/5. ' + note;
   }
 }
 function saveReflection(){
