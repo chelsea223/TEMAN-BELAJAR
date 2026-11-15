@@ -140,7 +140,6 @@ window.showLogin = showLogin;
 window.registerUser = registerUser; 
 async function loginUser() {
   const email = document.getElementById('login-email').value.trim();
-  const email = document.getElementById('login-email').value.trim();
   const password = document.getElementById('login-password').value;
   const message = document.getElementById('auth-message');
 
@@ -161,63 +160,58 @@ async function loginUser() {
     return;
   }
 
-  // Ambil data profil pengguna
-const { data: profile, error: profileError } = await supabase
-  .from('profiles')
-  .select('full_name, role, school_id')
-  .eq('id', data.user.id)
-  .single();
+  const { data: profile, error: profileError } = await supabase
+    .from('profiles')
+    .select('full_name, role, school_id')
+    .eq('id', data.user.id)
+    .single();
 
-// Periksa apakah profil berhasil ditemukan
-if (profileError) {
-  message.textContent = 'Profil tidak ditemukan: ' + profileError.message;
-  return;
-}
-
-// Pastikan jenis akun sesuai
-if (profile.role !== 'student' && profile.role !== 'counselor') {
-  message.textContent = 'Jenis akun tidak dikenali.';
-  return;
-}
-
-console.log('Profil pengguna:', profile);
-message.textContent = 'Login berhasil! Jenis akun: ' + profile.role;
-
-document.getElementById('auth-section').style.display = 'none';
-document.querySelector('header').style.display = 'block';
-
-if (profile.role === 'student') {
-  const dashboard = document.getElementById('dashboard-siswa');
-  const namaSiswa = document.getElementById('nama-siswa');
-
-  if (dashboard && namaSiswa) {
-    namaSiswa.textContent = profile.full_name || 'Siswa';
-    dashboard.style.display = 'block';
-
-    await muatProgresSiswa();
-
-    document.querySelector('nav').style.display = 'block';
-    document.querySelector('main').style.display = 'block';
-
-    showTab('beranda');
-  } else {
-    console.error('Dashboard Siswa tidak ditemukan.');
-    message.textContent = 'Dashboard Siswa tidak ditemukan.';
+  if (profileError) {
+    message.textContent = 'Profil tidak ditemukan: ' + profileError.message;
+    return;
   }
 
-} else if (profile.role === 'counselor') {
-  const dashboardGuru = document.getElementById('dashboard-guru');
+  if (profile.role !== 'student' && profile.role !== 'counselor') {
+    message.textContent = 'Jenis akun tidak dikenali.';
+    return;
+  }
 
-  if (dashboardGuru) {
-    dashboardGuru.style.display = 'block';
-    await tampilkanDataSiswa();
-    await tampilkanRefleksi();
+  message.textContent = 'Login berhasil! Jenis akun: ' + profile.role;
 
-    document.querySelector('nav').style.display = 'none';
-    document.querySelector('main').style.display = 'none';
-  } else {
-    console.error('Dashboard Guru BK tidak ditemukan.');
-    message.textContent = 'Dashboard Guru BK tidak ditemukan.';
+  document.getElementById('auth-section').style.display = 'none';
+  document.querySelector('header').style.display = 'block';
+
+  if (profile.role === 'student') {
+    const dashboard = document.getElementById('dashboard-siswa');
+    const namaSiswa = document.getElementById('nama-siswa');
+
+    if (dashboard && namaSiswa) {
+      namaSiswa.textContent = profile.full_name || 'Siswa';
+      dashboard.style.display = 'block';
+
+      await muatProgresSiswa();
+
+      document.querySelector('nav').style.display = 'block';
+      document.querySelector('main').style.display = 'block';
+
+      showTab('beranda');
+    } else {
+      message.textContent = 'Dashboard Siswa tidak ditemukan.';
+    }
+
+  } else if (profile.role === 'counselor') {
+    const dashboardGuru = document.getElementById('dashboard-guru');
+
+    if (dashboardGuru) {
+      dashboardGuru.style.display = 'block';
+      await tampilkanDataSiswa();
+      await tampilkanRefleksi();
+
+      document.querySelector('nav').style.display = 'none';
+      document.querySelector('main').style.display = 'none';
+    } else {
+      message.textContent = 'Dashboard Guru BK tidak ditemukan.';
+    }
   }
 }
 
