@@ -771,8 +771,11 @@ document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()
         : 'Tetap semangat. Baca kembali materi, lalu coba lagi.';
 
     box.textContent = 'Nilai kamu: ' + score + '/5. ' + note;
-  }
+ }
 }
+
+window.checkQuiz = checkQuiz;
+
 function saveReflection(){
   const data={};
   ['r1','r2','r3','r4'].forEach(id=>data[id]=document.getElementById(id).value);
