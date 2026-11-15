@@ -139,6 +139,7 @@ window.showRegister = showRegister;
 window.showLogin = showLogin;
 window.registerUser = registerUser; 
 async function loginUser() {
+  alert('fungsi login terpanggil!');
   const email = document.getElementById('login-email').value.trim();
   const password = document.getElementById('login-password').value;
   const message = document.getElementById('auth-message');
