@@ -139,7 +139,7 @@ window.showRegister = showRegister;
 window.showLogin = showLogin;
 window.registerUser = registerUser; 
 async function loginUser() {
-  alert('fungsi login terpanggil!');
+  const email = document.getElementById('login-email').value.trim();
   const email = document.getElementById('login-email').value.trim();
   const password = document.getElementById('login-password').value;
   const message = document.getElementById('auth-message');
@@ -443,7 +443,7 @@ window.tampilkanRefleksi = tampilkanRefleksi;
       <input type="email" id="login-email" placeholder="Email">
       <input type="password" id="login-password" placeholder="Kata sandi">
 
-      <button type="button" onclick="alert('Tombol Masuk diklik')">Masuk</button>
+      <button type="button" onclick="loginUser()">Masuk</button>
       <p>Belum punya akun?
         <a href="#" onclick="showRegister(); return false;">Daftar sekarang</a>
       </p>
