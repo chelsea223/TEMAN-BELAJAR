@@ -179,44 +179,45 @@ if (profile.role !== 'student' && profile.role !== 'counselor') {
   return;
 }
 
-// Tampilkan informasi akun untuk pengujian
 console.log('Profil pengguna:', profile);
 message.textContent = 'Login berhasil! Jenis akun: ' + profile.role;
 
 document.getElementById('auth-section').style.display = 'none';
 document.querySelector('header').style.display = 'block';
+
 if (profile.role === 'student') {
   const dashboard = document.getElementById('dashboard-siswa');
   const namaSiswa = document.getElementById('nama-siswa');
 
- if (dashboard && namaSiswa) {
-  namaSiswa.textContent = profile.full_name || 'Siswa';
-  dashboard.style.display = 'block';
+  if (dashboard && namaSiswa) {
+    namaSiswa.textContent = profile.full_name || 'Siswa';
+    dashboard.style.display = 'block';
 
-  await muatProgresSiswa();
+    await muatProgresSiswa();
 
-  document.querySelector('nav').style.display = 'block';
-  document.querySelector('main').style.display = 'block';
+    document.querySelector('nav').style.display = 'block';
+    document.querySelector('main').style.display = 'block';
 
-  showTab('beranda');
-} 
+    showTab('beranda');
+  } else {
     console.error('Dashboard Siswa tidak ditemukan.');
+    message.textContent = 'Dashboard Siswa tidak ditemukan.';
   }
-}
-else if (profile.role === 'counselor') {
+
+} else if (profile.role === 'counselor') {
   const dashboardGuru = document.getElementById('dashboard-guru');
 
   if (dashboardGuru) {
     dashboardGuru.style.display = 'block';
     await tampilkanDataSiswa();
     await tampilkanRefleksi();
+
     document.querySelector('nav').style.display = 'none';
     document.querySelector('main').style.display = 'none';
   } else {
     console.error('Dashboard Guru BK tidak ditemukan.');
+    message.textContent = 'Dashboard Guru BK tidak ditemukan.';
   }
-}  
-  
 }
 
 window.loginUser = loginUser;
