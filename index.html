@@ -730,8 +730,7 @@ function showTab(id) {
 }
 document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
 
-    let note=score===5?'Hebat! Semua jawaban benar.':score>=3?'Bagus! Pelajari kembali materi yang belum kamu kuasai.':'Tetap semangat. Baca kembali materi, lalu coba lagi.';
-    box.textContent='Nilai kamu: '+score+'/5. '+note;
+    
   function checkQuiz(){
   const answers = {
     q1:'a',
