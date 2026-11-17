@@ -219,7 +219,6 @@ window.loginUser = loginUser;
 let totalPoin = 0;
 let totalMisiSelesai = 0;
 let completedMissions = [false, false, false, false];
-
 async function selesaikanMisi(checkbox, poin) {
   const kotakMisi = Array.from(
     document.querySelectorAll(
@@ -431,17 +430,27 @@ window.tampilkanRefleksi = tampilkanRefleksi;
     <p>Tempat seru untuk mengatur perjalanan belajarmu!</p>
 
     <div id="login-form">
-      <h3>Selamat Datang!</h3>
-      <p>Silakan masuk ke akunmu.</p>
+  <h3>Selamat Datang!</h3>
+  <p>Silakan masuk ke akunmu.</p>
 
-      <input type="email" id="login-email" placeholder="Email">
-      <input type="password" id="login-password" placeholder="Kata sandi">
+  <input
+    type="text"
+    id="login-username"
+    placeholder="Username"
+  >
 
-      <button type="button" onclick="loginUser()">Masuk</button>
-      <p>Belum punya akun?
-        <a href="#" onclick="showRegister(); return false;">Daftar sekarang</a>
-      </p>
-    </div>
+  <input
+    type="password"
+    id="login-password"
+    placeholder="Kata sandi"
+  >
+
+  <button type="button" onclick="loginUser()">Masuk</button>
+
+  <p>Belum punya akun?
+    <a href="#" onclick="showRegister(); return false;">Daftar sekarang</a>
+  </p>
+</div>
 
     <div id="register-form" style="display:none;">
       <h3>Buat Akun Baru</h3>
