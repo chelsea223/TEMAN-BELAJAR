@@ -66,14 +66,30 @@ function showLogin() {
   document.getElementById('register-form').style.display = 'none';
   document.getElementById('login-form').style.display = 'block';
 }
+function toggleRegisterFields() {
+  const role = document.getElementById('register-role').value;
 
+  const schoolGroup = document.getElementById('register-school-group');
+  const inviteGroup = document.getElementById('register-invite-group');
+
+  if (role === 'student') {
+    schoolGroup.style.display = 'block';
+    inviteGroup.style.display = 'none';
+  } else {
+    schoolGroup.style.display = 'none';
+    inviteGroup.style.display = 'block';
+  }
+}
 async function registerUser() {
   const name = document.getElementById('register-name').value.trim();
-  const email = document.getElementById('register-email').value.trim();
+  const username = document.getElementById('register-username').value.trim();
   const password = document.getElementById('register-password').value;
+  const role = document.getElementById('register-role').value;
+  const schoolCode = document.getElementById('register-school-code').value.trim();
+  const inviteCode = document.getElementById('register-invite-code').value.trim();
   const message = document.getElementById('auth-message');
 
-  if (!name || !email || !password) {
+  if (!name || !username || !password) {
     message.textContent = 'Mohon lengkapi semua data.';
     return;
   }
@@ -83,27 +99,57 @@ async function registerUser() {
     return;
   }
 
-  message.textContent = 'Sedang membuat akun...';
-
-  const { data, error } = await supabase.auth.signUp({
-    email: email,
-    password: password,
-   options: {
-  data: {
-    full_name: name
-  },
-  emailRedirectTo: 'https://chelsea223.github.io/TEMAN-BELAJAR/'
-} 
-  });
-
-  if (error) {
-    message.textContent = 'Pendaftaran gagal: ' + error.message;
+  if (role === 'student' && !schoolCode) {
+    message.textContent = 'Masukkan kode sekolah.';
     return;
   }
 
-  message.textContent =
-    'Pendaftaran berhasil! Silakan periksa email jika diminta konfirmasi.';
+  if (role === 'counselor' && !inviteCode) {
+    message.textContent = 'Masukkan kode undangan Admin.';
+    return;
+  }
+
+  message.textContent = 'Sedang membuat akun...';
+
+  const { data, error } = await supabase.functions.invoke(
+    'hyper-processor',
+    {
+      body: {
+        action: 'register',
+        name,
+        username,
+        password,
+        role,
+        schoolCode,
+        inviteCode
+      }
+    }
+  );
+
+  if (error) {
+    message.textContent =
+      data?.error || 'Pendaftaran gagal: ' + error.message;
+    return;
+  }
+
+  if (!data?.success) {
+    message.textContent =
+      data?.error || 'Pendaftaran gagal.';
+    return;
+  }
+
+  message.textContent = data.message;
+
+  document.getElementById('register-name').value = '';
+  document.getElementById('register-username').value = '';
+  document.getElementById('register-password').value = '';
+  document.getElementById('register-school-code').value = '';
+  document.getElementById('register-invite-code').value = '';
 }
+
+window.registerUser = registerUser;
+window.toggleRegisterFields = toggleRegisterFields;
+
 async function kirimUlangKonfirmasi() {
   const email = document.getElementById('register-email').value.trim();
   const message = document.getElementById('auth-message');
@@ -139,79 +185,110 @@ window.showRegister = showRegister;
 window.showLogin = showLogin;
 window.registerUser = registerUser; 
 async function loginUser() {
-  const email = document.getElementById('login-email').value.trim();
+  const username = document.getElementById('login-username').value.trim();
   const password = document.getElementById('login-password').value;
   const message = document.getElementById('auth-message');
 
-  if (!email || !password) {
-    message.textContent = 'Masukkan email dan kata sandi.';
+  if (!username || !password) {
+    message.textContent = 'Masukkan username dan kata sandi.';
     return;
   }
 
   message.textContent = 'Sedang masuk...';
 
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email: email,
-    password: password
-  });
+  try {
+    const { data, error } = await supabase.functions.invoke(
+      'hyper-processor',
+      {
+        body: {
+          username: username,
+          password: password
+        }
+      }
+    );
 
-  if (error) {
-    message.textContent = 'Login gagal: ' + error.message;
-    return;
-  }
-
-  const { data: profile, error: profileError } = await supabase
-    .from('profiles')
-    .select('full_name, role, school_id')
-    .eq('id', data.user.id)
-    .single();
-
-  if (profileError) {
-    message.textContent = 'Profil tidak ditemukan: ' + profileError.message;
-    return;
-  }
-
-  if (profile.role !== 'student' && profile.role !== 'counselor') {
-    message.textContent = 'Jenis akun tidak dikenali.';
-    return;
-  }
-
-  message.textContent = 'Login berhasil! Jenis akun: ' + profile.role;
-
-  document.getElementById('auth-section').style.display = 'none';
-  document.querySelector('header').style.display = 'block';
-
-  if (profile.role === 'student') {
-    const dashboard = document.getElementById('dashboard-siswa');
-    const namaSiswa = document.getElementById('nama-siswa');
-
-    if (dashboard && namaSiswa) {
-      namaSiswa.textContent = profile.full_name || 'Siswa';
-      dashboard.style.display = 'block';
-
-      await muatProgresSiswa();
-
-      document.querySelector('nav').style.display = 'block';
-      document.querySelector('main').style.display = 'block';
-
-      showTab('beranda');
-    } else {
-      message.textContent = 'Dashboard Siswa tidak ditemukan.';
+    if (error) {
+      message.textContent = 'Login gagal: ' + error.message;
+      return;
     }
 
-  } else if (profile.role === 'counselor') {
-    const dashboardGuru = document.getElementById('dashboard-guru');
-
-    if (dashboardGuru) {
-      dashboardGuru.style.display = 'block';
-      await tampilkanDataSiswa();
-      await tampilkanRefleksi();
-
-      document.querySelector('nav').style.display = 'none';
-      document.querySelector('main').style.display = 'none';
-    } else {
-      message.textContent = 'Dashboard Guru BK tidak ditemukan.';
+    if (!data || !data.success || !data.session) {
+      message.textContent =
+        data?.error || 'Login gagal. Periksa username dan kata sandi.';
+      return;
     }
+
+    const { error: sessionError } = await supabase.auth.setSession({
+      access_token: data.session.access_token,
+      refresh_token: data.session.refresh_token
+    });
+
+    if (sessionError) {
+      message.textContent = 'Sesi login gagal: ' + sessionError.message;
+      return;
+    }
+
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('full_name, role, school_id, approval_status')
+      .eq('id', data.session.user.id)
+      .single();
+
+    if (profileError || !profile) {
+      message.textContent = 'Profil tidak ditemukan.';
+      return;
+    }
+
+    if (profile.approval_status !== 'approved') {
+      message.textContent = 'Akun belum disetujui Admin.';
+      return;
+    }
+
+    message.textContent = 'Login berhasil!';
+
+    document.getElementById('auth-section').style.display = 'none';
+    document.querySelector('header').style.display = 'block';
+
+    if (profile.role === 'student') {
+      const dashboard = document.getElementById('dashboard-siswa');
+      const namaSiswa = document.getElementById('nama-siswa');
+
+      if (dashboard && namaSiswa) {
+        namaSiswa.textContent = profile.full_name || 'Siswa';
+        dashboard.style.display = 'block';
+
+        await muatProgresSiswa();
+
+        document.querySelector('nav').style.display = 'block';
+        document.querySelector('main').style.display = 'block';
+
+        showTab('beranda');
+      } else {
+        message.textContent = 'Dashboard Siswa tidak ditemukan.';
+      }
+
+    } else if (profile.role === 'counselor') {
+      const dashboardGuru = document.getElementById('dashboard-guru');
+
+      if (dashboardGuru) {
+        dashboardGuru.style.display = 'block';
+
+        await tampilkanDataSiswa();
+        await tampilkanRefleksi();
+
+        document.querySelector('nav').style.display = 'none';
+        document.querySelector('main').style.display = 'none';
+      } else {
+        message.textContent = 'Dashboard Guru BK tidak ditemukan.';
+      }
+
+    } else {
+      message.textContent = 'Jenis akun tidak dikenali.';
+    }
+
+  } catch (err) {
+    console.error('Kesalahan login:', err);
+    message.textContent = 'Terjadi kesalahan saat login.';
   }
 }
 
@@ -452,27 +529,41 @@ window.tampilkanRefleksi = tampilkanRefleksi;
   </p>
 </div>
 
-    <div id="register-form" style="display:none;">
-      <h3>Buat Akun Baru</h3>
+  <div id="register-form" style="display:none;">
+  <h3>Buat Akun Baru</h3>
 
-      <input type="text" id="register-name" placeholder="Nama lengkap">
-      <input type="email" id="register-email" placeholder="Email">
-      <input type="password" id="register-password" placeholder="Kata sandi">
+  <input type="text" id="register-name" placeholder="Nama lengkap">
 
-      <label for="register-role">Jenis akun</label>
-      <select id="register-role">
-        <option value="student">Siswa</option>
-      </select>
+  <input type="text" id="register-username" placeholder="Buat username">
 
-      <button type="button" onclick="registerUser()">Daftar</button>
-<button type="button" id="btn-kirim-ulang">
-  Kirim Ulang Konfirmasi Email
-</button>
-      <p>Sudah punya akun?
-        <a href="#" onclick="showLogin(); return false;">Masuk</a>
-      </p>
-    </div>
+  <input type="password" id="register-password" placeholder="Buat kata sandi">
 
+  <label for="register-role">Jenis akun</label>
+  <select id="register-role" onchange="toggleRegisterFields()">
+    <option value="student">Siswa</option>
+    <option value="counselor">Guru BK</option>
+  </select>
+
+  <div id="register-school-group">
+    <input
+      type="text"
+      id="register-school-code"
+      placeholder="Masukkan kode sekolah">
+  </div>
+
+  <div id="register-invite-group" style="display:none;">
+    <input
+      type="text"
+      id="register-invite-code"
+      placeholder="Masukkan kode undangan Admin">
+  </div>
+
+  <button type="button" onclick="registerUser()">Daftar</button>
+
+  <p>Sudah punya akun?
+    <a href="#" onclick="showLogin(); return false;">Masuk</a>
+  </p>
+</div>  
     <p id="auth-message"></p>
   </div>
 </section>
