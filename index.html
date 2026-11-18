@@ -288,6 +288,7 @@ async function loginUser() {
         dashboardAdmin.style.display = 'block';
       await muatDaftarSekolah();
       await muatDaftarSiswa();
+      await muatDaftarGuruBK();
         document.querySelector('nav').style.display = 'none';
         document.querySelector('main').style.display = 'none';
       } else {
@@ -385,7 +386,49 @@ async function muatDaftarSiswa() {
     tempat.appendChild(item);
   });
 }
-    
+async function muatDaftarGuruBK() {
+  const tempat = document.getElementById('daftar-guru-bk');
+
+  tempat.textContent = 'Memuat data Guru BK...';
+
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('id, full_name, username, school_id, approval_status')
+    .eq('role', 'counselor')
+    .order('full_name');
+
+  if (error) {
+    tempat.textContent = 'Gagal memuat Guru BK: ' + error.message;
+    return;
+  }
+
+  tempat.innerHTML = '';
+
+  if (!data || data.length === 0) {
+    tempat.textContent = 'Belum ada akun Guru BK terdaftar.';
+    return;
+  }
+
+  data.forEach((guru) => {
+    const item = document.createElement('div');
+    item.className = 'card';
+
+    const nama = document.createElement('h4');
+    nama.textContent = guru.full_name || 'Nama belum tersedia';
+
+    const username = document.createElement('p');
+    username.textContent = 'Username: ' + (guru.username || '-');
+
+    const status = document.createElement('p');
+    status.textContent = 'Status: ' + (guru.approval_status || '-');
+
+    item.appendChild(nama);
+    item.appendChild(username);
+    item.appendChild(status);
+
+    tempat.appendChild(item);
+  });
+}    
 let totalPoin = 0;
 let totalMisiSelesai = 0;
 let completedMissions = [false, false, false, false];
