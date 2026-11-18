@@ -281,7 +281,17 @@ async function loginUser() {
       } else {
         message.textContent = 'Dashboard Guru BK tidak ditemukan.';
       }
+} else if (profile.role === 'admin') {
+      const dashboardAdmin = document.getElementById('dashboard-admin');
 
+      if (dashboardAdmin) {
+        dashboardAdmin.style.display = 'block';
+
+        document.querySelector('nav').style.display = 'none';
+        document.querySelector('main').style.display = 'none';
+      } else {
+        message.textContent = 'Dashboard Admin tidak ditemukan.';
+      }
     } else {
       message.textContent = 'Jenis akun tidak dikenali.';
     }
