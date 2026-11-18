@@ -286,7 +286,7 @@ async function loginUser() {
 
       if (dashboardAdmin) {
         dashboardAdmin.style.display = 'block';
-
+      await muatDaftarSekolah();
         document.querySelector('nav').style.display = 'none';
         document.querySelector('main').style.display = 'none';
       } else {
@@ -303,6 +303,44 @@ async function loginUser() {
 }
 
 window.loginUser = loginUser;
+
+async function muatDaftarSekolah() {
+  const tempat = document.getElementById('daftar-sekolah');
+
+  tempat.textContent = 'Memuat data sekolah...';
+
+  const { data, error } = await supabase
+    .from('schools')
+    .select('id, name, school_code')
+    .order('name');
+
+  if (error) {
+    tempat.textContent = 'Gagal memuat sekolah: ' + error.message;
+    return;
+  }
+
+  tempat.innerHTML = '';
+
+  if (!data || data.length === 0) {
+    tempat.textContent = 'Belum ada sekolah terdaftar.';
+    return;
+  }
+
+  data.forEach((sekolah) => {
+    const item = document.createElement('div');
+    item.className = 'card';
+
+    const nama = document.createElement('h4');
+    nama.textContent = sekolah.name;
+
+    const kode = document.createElement('p');
+    kode.textContent = 'Kode Sekolah: ' + sekolah.school_code;
+
+    item.appendChild(nama);
+    item.appendChild(kode);
+    tempat.appendChild(item);
+  });
+}    
 let totalPoin = 0;
 let totalMisiSelesai = 0;
 let completedMissions = [false, false, false, false];
