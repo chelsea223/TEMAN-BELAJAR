@@ -80,6 +80,9 @@ function toggleRegisterFields() {
     inviteGroup.style.display = 'block';
   }
 }
+window.showRegister = showRegister;
+window.showLogin = showLogin;
+window.toggleRegisterFields = toggleRegisterFields;    
 async function registerUser() {
   const name = document.getElementById('register-name').value.trim();
   const username = document.getElementById('register-username').value.trim();
