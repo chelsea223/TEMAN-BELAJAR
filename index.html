@@ -390,6 +390,7 @@ async function muatDaftarGuruBK() {
   const tempat = document.getElementById('daftar-guru-bk');
 
   tempat.textContent = 'Memuat data Guru BK...';
+  console.log('Fungsi muatDaftarGuruBK dijalankan');
 
   const { data, error } = await supabase
     .from('profiles')
