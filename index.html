@@ -287,6 +287,7 @@ async function loginUser() {
       if (dashboardAdmin) {
         dashboardAdmin.style.display = 'block';
       await muatDaftarSekolah();
+        await muatDaftarSiswa();
         document.querySelector('nav').style.display = 'none';
         document.querySelector('main').style.display = 'none';
       } else {
@@ -340,7 +341,51 @@ async function muatDaftarSekolah() {
     item.appendChild(kode);
     tempat.appendChild(item);
   });
-}    
+} 
+async function muatDaftarSiswa() {
+  const tempat = document.getElementById('daftar-admin-siswa');
+
+  tempat.textContent = 'Memuat data siswa...';
+
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('id, full_name, username, school_id, approval_status')
+    .eq('role', 'student')
+    .order('full_name');
+
+  if (error) {
+    tempat.textContent = 'Gagal memuat siswa: ' + error.message;
+    return;
+  }
+
+  tempat.innerHTML = '';
+
+  if (!data || data.length === 0) {
+    tempat.textContent = 'Belum ada siswa terdaftar.';
+    return;
+  }
+
+  data.forEach((siswa) => {
+    const item = document.createElement('div');
+    item.className = 'card';
+
+    const nama = document.createElement('h4');
+    nama.textContent = siswa.full_name || 'Nama belum tersedia';
+
+    const username = document.createElement('p');
+    username.textContent = 'Username: ' + (siswa.username || '-');
+
+    const status = document.createElement('p');
+    status.textContent = 'Status: ' + (siswa.approval_status || '-');
+
+    item.appendChild(nama);
+    item.appendChild(username);
+    item.appendChild(status);
+
+    tempat.appendChild(item);
+  });
+}
+    
 let totalPoin = 0;
 let totalMisiSelesai = 0;
 let completedMissions = [false, false, false, false];
