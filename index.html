@@ -385,7 +385,7 @@ async function muatDaftarSiswa() {
   tombol.onclick = async () => {
     const { error } = await supabase
       .from('profiles')
-      .update({ approval_status: 'approved' })
+      .update({ approval_status: 'approve' })
       .eq('id', siswa.id);
 
     if (error) {
