@@ -1264,10 +1264,11 @@ function openEmail(){
     return;
   }
 
-  status.textContent = 'Sedang mengirim pesan...';
+  status.textContent = '1. Sedang memeriksa akun...';
 
   const { data: { user }, error: userError } =
     await supabase.auth.getUser();
+    status.textContent = '2. Akun ditemukan, sedang memeriksa profil...';
 
   if (userError || !user) {
     status.textContent = 'Silakan login terlebih dahulu.';
