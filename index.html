@@ -683,6 +683,48 @@ window.simpanRefleksi = simpanRefleksi;
     daftarSiswa.appendChild(item);
   });
 }  
+async function tampilkanBalasanGuruBK() {
+  const tempat = document.getElementById('balasan-guru-bk');
+
+  if (!tempat) return;
+
+  tempat.textContent = 'Memuat balasan Guru BK...';
+
+  const { data, error } = await supabase
+    .from('student_messages')
+    .select('id, message, reply, created_at, replied_at')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    tempat.textContent = 'Gagal memuat balasan: ' + error.message;
+    return;
+  }
+
+  tempat.innerHTML = '';
+
+  if (!data || data.length === 0) {
+    tempat.textContent = 'Belum ada pesan dari Guru BK.';
+    return;
+  }
+
+  data.forEach((pesan) => {
+    const kartu = document.createElement('div');
+    kartu.className = 'card';
+
+    const pesanSaya = document.createElement('p');
+    pesanSaya.textContent = 'Pesan kamu: ' + pesan.message;
+
+    const balasan = document.createElement('p');
+    balasan.textContent = pesan.reply
+      ? 'Balasan Guru BK: ' + pesan.reply
+      : 'Guru BK belum membalas pesan ini.';
+
+    kartu.appendChild(pesanSaya);
+    kartu.appendChild(balasan);
+
+    tempat.appendChild(kartu);
+  });
+}    
 window.tampilkanDataSiswa = tampilkanDataSiswa;
 async function tampilkanProgresSiswa() {
   const tempat = document.getElementById('daftar-progres-siswa');
@@ -1272,6 +1314,12 @@ window.tampilkanRefleksi = tampilkanRefleksi;
     </button>
     <p class="small">Catatan: tombol akan membuka aplikasi WhatsApp atau email dengan pesan yang sudah disiapkan. Kamu tetap perlu menekan tombol kirim di aplikasi tersebut. Jangan menuliskan kata sandi atau informasi pribadi yang sangat sensitif.</p>
     <div id="contactStatus" class="small" aria-live="polite"></div>
+    <div class="card">
+  <h3>📩 Balasan dari Guru BK</h3>
+  <div id="balasan-guru-bk">
+    <p>Belum ada balasan dari Guru BK.</p>
+  </div>
+</div>
   </div>
 </section>
 </main>
