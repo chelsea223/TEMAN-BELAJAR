@@ -804,8 +804,7 @@ async function tampilkanRefleksi() {
 async function tampilkanPesanSiswa() {
   const tempat = document.getElementById('daftar-pesan-siswa');
 
-  tempat.textContent = 'Memuat pesan siswa...';
-
+  tempat.textContent = 'Fungsi pesan sedang dijalankan...';
   const { data: pesan, error } = await supabase
     .from('student_messages')
     .select('id, student_id, message, created_at, status')
