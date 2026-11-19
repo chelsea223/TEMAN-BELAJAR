@@ -274,6 +274,7 @@ async function loginUser() {
         dashboardGuru.style.display = 'block';
 
         await tampilkanDataSiswa();
+        await tampilkanProgresSiswa();
         await tampilkanRefleksi();
 
         document.querySelector('nav').style.display = 'none';
@@ -682,7 +683,72 @@ window.simpanRefleksi = simpanRefleksi;
   });
 }  
 window.tampilkanDataSiswa = tampilkanDataSiswa;
+async function tampilkanProgresSiswa() {
+  const tempat = document.getElementById('daftar-progres-siswa');
 
+  tempat.textContent = 'Memuat progres belajar siswa...';
+
+  // Mengambil daftar siswa
+  const { data: siswa, error: errorSiswa } = await supabase
+    .from('profiles')
+    .select('id, full_name')
+    .eq('role', 'student');
+
+  if (errorSiswa) {
+    tempat.textContent = 'Gagal memuat siswa: ' + errorSiswa.message;
+    return;
+  }
+
+  // Mengambil data progres siswa
+  const { data: progres, error: errorProgres } = await supabase
+    .from('student_progress')
+    .select('student_id, total_points, missions_completed, updated_at');
+
+  if (errorProgres) {
+    tempat.textContent = 'Gagal memuat progres: ' + errorProgres.message;
+    return;
+  }
+
+  tempat.innerHTML = '';
+
+  if (!siswa || siswa.length === 0) {
+    tempat.textContent = 'Belum ada siswa terdaftar.';
+    return;
+  }
+
+  siswa.forEach((anak) => {
+    const dataProgres = progres.find(
+      (p) => p.student_id === anak.id
+    );
+
+    const item = document.createElement('div');
+    item.className = 'card';
+
+    const nama = document.createElement('h4');
+    nama.textContent = anak.full_name || 'Nama belum diisi';
+
+    const poin = document.createElement('p');
+    poin.textContent = 'Total poin: ' +
+      (dataProgres?.total_points ?? 0);
+
+    const misi = document.createElement('p');
+    misi.textContent = 'Misi selesai: ' +
+      (dataProgres?.missions_completed ?? 0);
+
+    const pembaruan = document.createElement('p');
+    pembaruan.textContent = dataProgres?.updated_at
+      ? 'Pembaruan terakhir: ' +
+        new Date(dataProgres.updated_at).toLocaleString('id-ID')
+      : 'Belum ada progres belajar.';
+
+    item.appendChild(nama);
+    item.appendChild(poin);
+    item.appendChild(misi);
+    item.appendChild(pembaruan);
+
+    tempat.appendChild(item);
+  });
+}
 async function tampilkanRefleksi() {
   const daftar = document.getElementById('daftar-refleksi');
 
