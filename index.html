@@ -740,7 +740,12 @@ async function tampilkanProgresSiswa() {
       ? 'Pembaruan terakhir: ' +
         new Date(dataProgres.updated_at).toLocaleString('id-ID')
       : 'Belum ada progres belajar.';
-    const daftarMisi = [
+   
+    item.appendChild(nama);
+    item.appendChild(poin);
+    item.appendChild(misi);
+    item.appendChild(pembaruan);
+     const daftarMisi = [
   'Membuat jadwal belajar harian',
   'Membaca materi selama 20 menit',
   'Mengerjakan kuis pembelajaran',
@@ -765,10 +770,6 @@ daftarMisi.forEach((namaMisi, index) => {
 item.appendChild(judulMisi);
 item.appendChild(daftarDetail);
 
-    item.appendChild(nama);
-    item.appendChild(poin);
-    item.appendChild(misi);
-    item.appendChild(pembaruan);
 
     tempat.appendChild(item);
   });
