@@ -444,6 +444,28 @@ async function muatDaftarGuruBK() {
 
     const status = document.createElement('p');
     status.textContent = 'Status: ' + (guru.approval_status || '-');
+    if (guru.approval_status === 'pending') {
+  const tombol = document.createElement('button');
+  tombol.textContent = 'Setujui Akun';
+
+  tombol.onclick = async () => {
+    const { error } = await supabase
+      .from('profiles')
+      .update({ approval_status: 'approved' })
+      .eq('id', guru.id);
+
+    if (error) {
+      console.error('Detail error persetujuan Guru BK:', error);
+      alert('Gagal menyetujui akun: ' + error.message);
+      return;
+    }
+
+    alert('Akun Guru BK berhasil disetujui!');
+    await muatDaftarGuruBK();
+  };
+
+  item.appendChild(tombol);
+}
 
     item.appendChild(nama);
     item.appendChild(username);
