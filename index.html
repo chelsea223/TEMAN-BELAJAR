@@ -1263,17 +1263,33 @@ function openEmail(){
     return;
   }
 
-  status.textContent = '1. Sedang memeriksa akun...';
+status.textContent = '1. Sedang memeriksa akun...';
 
- const { data: { user }, error: userError } =
-  await supabase.auth.getUser();
+let user;
+let userError;
+
+try {
+  const hasilLogin = await Promise.race([
+    supabase.auth.getUser(),
+    new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('Koneksi pemeriksaan akun terlalu lama.')), 15000)
+    )
+  ]);
+
+  user = hasilLogin.data?.user;
+  userError = hasilLogin.error;
+
+} catch (error) {
+  status.textContent = 'Gagal memeriksa akun: ' + error.message;
+  return;
+}
 
 if (userError || !user) {
   status.textContent = 'Silakan login terlebih dahulu.';
   return;
 }
 
-status.textContent = '2. Akun ditemukan, sedang memeriksa profil...';
+status.textContent = '2. Akun ditemukan, sedang memeriksa profil...';  
 
   const { data: profil, error: profilError } = await supabase
     .from('profiles')
