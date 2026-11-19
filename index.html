@@ -844,7 +844,6 @@ async function tampilkanRefleksi() {
     daftar.appendChild(item);
   });
 }
-}
 async function tampilkanPesanSiswa() {
   const tempat = document.getElementById('daftar-pesan-siswa');
 
@@ -903,7 +902,7 @@ kartu.appendChild(status);
 const kotakBalasan = document.createElement('textarea');
 kotakBalasan.placeholder = 'Tulis balasan untuk siswa...';
 kotakBalasan.value = p.reply || '';
-const tombolBalas = document.createElement('button');
+
 tombolBalas.textContent = 'Kirim Balasan';
 tombolBalas.type = 'button';
 tombolBalas.style.display = 'inline-block';
@@ -981,8 +980,6 @@ kartu.appendChild(tombolBalas);
 tempat.appendChild(kartu); 
   });
 }
-window.tampilkanRefleksi = tampilkanRefleksi;    
-</script>
 window.tampilkanRefleksi = tampilkanRefleksi;    
 </script>
 <body>
@@ -1449,7 +1446,6 @@ function openEmail(){
   const status = document.getElementById('contactStatus');
 status.textContent = 'VERSI BARU AKTIF - memeriksa koneksi...';  
   const pesan = document.getElementById('message').value.trim();
-  const status = document.getElementById('contactStatus');
 
   if (!pesan) {
     status.textContent = 'Silakan tulis pesan terlebih dahulu.';
