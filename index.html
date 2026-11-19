@@ -277,6 +277,7 @@ async function loginUser() {
         await tampilkanDataSiswa();
         await tampilkanProgresSiswa();
         await tampilkanRefleksi();
+        await tampilkanPesanSiswa();
 
         document.querySelector('nav').style.display = 'none';
         document.querySelector('main').style.display = 'none';
@@ -800,7 +801,66 @@ async function tampilkanRefleksi() {
     daftar.appendChild(item);
   });
 }
+async function tampilkanPesanSiswa() {
+  const tempat = document.getElementById('daftar-pesan-siswa');
 
+  tempat.textContent = 'Memuat pesan siswa...';
+
+  const { data: pesan, error } = await supabase
+    .from('student_messages')
+    .select('id, student_id, message, created_at, status')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    tempat.textContent = 'Gagal memuat pesan: ' + error.message;
+    return;
+  }
+
+  tempat.innerHTML = '';
+
+  if (!pesan || pesan.length === 0) {
+    tempat.textContent = 'Belum ada pesan dari siswa.';
+    return;
+  }
+
+  const ids = [...new Set(pesan.map(p => p.student_id))];
+
+  const { data: siswa, error: errorSiswa } = await supabase
+    .from('profiles')
+    .select('id, full_name')
+    .in('id', ids);
+
+  if (errorSiswa) {
+    tempat.textContent = 'Gagal memuat nama siswa: ' + errorSiswa.message;
+    return;
+  }
+
+  pesan.forEach((p) => {
+    const namaSiswa = siswa.find(s => s.id === p.student_id);
+
+    const kartu = document.createElement('div');
+    kartu.className = 'card';
+
+    const nama = document.createElement('h4');
+    nama.textContent = namaSiswa?.full_name || 'Siswa';
+
+    const isi = document.createElement('p');
+    isi.textContent = p.message;
+
+    const waktu = document.createElement('small');
+    waktu.textContent = new Date(p.created_at).toLocaleString('id-ID');
+
+    const status = document.createElement('p');
+    status.textContent = 'Status: ' + p.status;
+
+    kartu.appendChild(nama);
+    kartu.appendChild(isi);
+    kartu.appendChild(waktu);
+    kartu.appendChild(status);
+
+    tempat.appendChild(kartu);
+  });
+}
 window.tampilkanRefleksi = tampilkanRefleksi;    
 </script>
 <body>
@@ -983,8 +1043,10 @@ window.tampilkanRefleksi = tampilkanRefleksi;
 </div>
 
   <div class="card">
-    <h3>💬 Pesan dari Siswa</h3>
-    <p>Pesan siswa kepada Guru BK akan ditampilkan di sini.</p>
+   <h3>💬 Pesan dari Siswa</h3>
+<div id="daftar-pesan-siswa">
+  <p>Memuat pesan siswa...</p>
+</div> 
   </div>
 
 </section>
