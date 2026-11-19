@@ -338,11 +338,42 @@ async function muatDaftarSekolah() {
     const kode = document.createElement('p');
     kode.textContent = 'Kode Sekolah: ' + sekolah.school_code;
 
+    const tombol = document.createElement('button');
+    tombol.textContent = 'Buat Kode Undangan Guru BK';
+
+    const hasilKode = document.createElement('p');
+
+    tombol.onclick = async () => {
+      tombol.disabled = true;
+      tombol.textContent = 'Sedang membuat kode...';
+
+      const { data: kodeBaru, error: errorKode } =
+        await supabase.rpc('buat_kode_undangan_guru', {
+          p_school_id: sekolah.id
+        });
+
+      if (errorKode) {
+        alert('Gagal membuat kode: ' + errorKode.message);
+        tombol.disabled = false;
+        tombol.textContent = 'Buat Kode Undangan Guru BK';
+        return;
+      }
+
+      hasilKode.textContent = 'Kode Undangan: ' + kodeBaru;
+      tombol.textContent = 'Buat Kode Undangan Lagi';
+      tombol.disabled = false;
+
+      alert('Kode undangan berhasil dibuat: ' + kodeBaru);
+    };
+
     item.appendChild(nama);
     item.appendChild(kode);
+    item.appendChild(tombol);
+    item.appendChild(hasilKode);
+
     tempat.appendChild(item);
   });
-} 
+}
 async function muatDaftarSiswa() {
   const tempat = document.getElementById('daftar-admin-siswa');
 
