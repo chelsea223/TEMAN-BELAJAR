@@ -806,10 +806,9 @@ async function tampilkanPesanSiswa() {
 
   tempat.textContent = 'Fungsi pesan sedang dijalankan...';
   const { data: pesan, error } = await supabase
-    .from('student_messages')
-    .select('id, student_id, message, created_at, status')
-    .order('created_at', { ascending: false });
-
+  .from('student_messages')
+  .select('id, student_id, message, created_at, status, reply, replied_at')
+  .order('created_at', { ascending: false });
   if (error) {
     tempat.textContent = 'Gagal memuat pesan: ' + error.message;
     return;
@@ -852,12 +851,53 @@ async function tampilkanPesanSiswa() {
     const status = document.createElement('p');
     status.textContent = 'Status: ' + p.status;
 
-    kartu.appendChild(nama);
-    kartu.appendChild(isi);
-    kartu.appendChild(waktu);
-    kartu.appendChild(status);
+   kartu.appendChild(nama);
+kartu.appendChild(isi);
+kartu.appendChild(waktu);
+kartu.appendChild(status);
 
-    tempat.appendChild(kartu);
+const kotakBalasan = document.createElement('textarea');
+kotakBalasan.placeholder = 'Tulis balasan untuk siswa...';
+kotakBalasan.value = p.reply || '';
+
+const tombolBalas = document.createElement('button');
+tombolBalas.textContent = 'Kirim Balasan';
+
+tombolBalas.onclick = async () => {
+  const balasan = kotakBalasan.value.trim();
+
+  if (!balasan) {
+    alert('Silakan tulis balasan terlebih dahulu.');
+    return;
+  }
+
+  tombolBalas.disabled = true;
+  tombolBalas.textContent = 'Mengirim...';
+
+  const { error: errorBalas } = await supabase
+    .from('student_messages')
+    .update({
+      reply: balasan,
+      replied_at: new Date().toISOString(),
+      status: 'dibalas'
+    })
+    .eq('id', p.id);
+
+  if (errorBalas) {
+    alert('Gagal mengirim balasan: ' + errorBalas.message);
+    tombolBalas.disabled = false;
+    tombolBalas.textContent = 'Kirim Balasan';
+    return;
+  }
+
+  alert('Balasan berhasil dikirim!');
+  await tampilkanPesanSiswa();
+};
+
+kartu.appendChild(kotakBalasan);
+kartu.appendChild(tombolBalas);
+
+tempat.appendChild(kartu); 
   });
 }
 window.tampilkanRefleksi = tampilkanRefleksi;    
