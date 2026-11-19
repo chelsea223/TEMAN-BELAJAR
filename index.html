@@ -1255,6 +1255,57 @@ function openEmail(){
   const subject=encodeURIComponent('Permohonan Konsultasi BK Bidang Belajar');
   window.location.href='mailto:'+email+'?subject='+subject+'&body='+encodeURIComponent(msg);
 }
+  async function kirimPesanLangsung() {
+  const pesan = document.getElementById('message').value.trim();
+  const status = document.getElementById('contactStatus');
+
+  if (!pesan) {
+    status.textContent = 'Silakan tulis pesan terlebih dahulu.';
+    return;
+  }
+
+  status.textContent = 'Sedang mengirim pesan...';
+
+  const { data: { user }, error: userError } =
+    await supabase.auth.getUser();
+
+  if (userError || !user) {
+    status.textContent = 'Silakan login terlebih dahulu.';
+    return;
+  }
+
+  const { data: profil, error: profilError } = await supabase
+    .from('profiles')
+    .select('school_id, role, approval_status')
+    .eq('id', user.id)
+    .single();
+
+  if (profilError || !profil || profil.role !== 'student' ||
+      profil.approval_status !== 'approved' || !profil.school_id) {
+    status.textContent = 'Data akun siswa tidak valid.';
+    return;
+  }
+
+  const { error } = await supabase
+    .from('student_messages')
+    .insert({
+      student_id: user.id,
+      school_id: profil.school_id,
+      message: pesan
+    });
+
+  if (error) {
+    console.error('Gagal mengirim pesan:', error);
+    status.textContent = 'Pesan gagal dikirim: ' + error.message;
+    return;
+  }
+
+  status.textContent = 'Pesan berhasil dikirim kepada Guru BK!';
+
+  document.getElementById('message').value = '';
+}
+
+window.kirimPesanLangsung = kirimPesanLangsung;
 loadReflection();
 </script>
 </body>
