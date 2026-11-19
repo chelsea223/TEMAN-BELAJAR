@@ -740,6 +740,30 @@ async function tampilkanProgresSiswa() {
       ? 'Pembaruan terakhir: ' +
         new Date(dataProgres.updated_at).toLocaleString('id-ID')
       : 'Belum ada progres belajar.';
+    const daftarMisi = [
+  'Membuat jadwal belajar harian',
+  'Membaca materi selama 20 menit',
+  'Mengerjakan kuis pembelajaran',
+  'Menulis refleksi belajar'
+];
+
+const judulMisi = document.createElement('h5');
+judulMisi.textContent = 'Detail Misi Belajar:';
+
+const daftarDetail = document.createElement('ul');
+
+daftarMisi.forEach((namaMisi, index) => {
+  const status = dataProgres?.completed_missions?.[index] ?? false;
+
+  const li = document.createElement('li');
+  li.textContent = (status ? '✅ Selesai: ' : '⏳ Belum selesai: ')
+    + namaMisi;
+
+  daftarDetail.appendChild(li);
+});
+
+item.appendChild(judulMisi);
+item.appendChild(daftarDetail);
 
     item.appendChild(nama);
     item.appendChild(poin);
