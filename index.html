@@ -1290,6 +1290,8 @@ if (userError || !user) {
 }
 
 status.textContent = '2. Akun ditemukan, sedang memeriksa profil...';  
+status.textContent = '2. Akun ditemukan, sedang memeriksa profil...';  
+    
 
   const { data: profil, error: profilError } = await supabase
     .from('profiles')
