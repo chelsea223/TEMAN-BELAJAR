@@ -389,9 +389,10 @@ async function muatDaftarSiswa() {
       .eq('id', siswa.id);
 
     if (error) {
-      alert('Gagal menyetujui akun: ' + error.message);
-      return;
-    }
+  console.error('Detail error persetujuan:', error);
+  alert('Detail error: ' + JSON.stringify(error));
+  return;
+}
 
     alert('Akun siswa berhasil disetujui!');
     await muatDaftarSiswa();
