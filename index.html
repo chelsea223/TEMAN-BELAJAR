@@ -1265,14 +1265,15 @@ function openEmail(){
 
   status.textContent = '1. Sedang memeriksa akun...';
 
-  const { data: { user }, error: userError } =
-    await supabase.auth.getUser();
-    status.textContent = '2. Akun ditemukan, sedang memeriksa profil...';
+ const { data: { user }, error: userError } =
+  await supabase.auth.getUser();
 
-  if (userError || !user) {
-    status.textContent = 'Silakan login terlebih dahulu.';
-    return;
-  }
+if (userError || !user) {
+  status.textContent = 'Silakan login terlebih dahulu.';
+  return;
+}
+
+status.textContent = '2. Akun ditemukan, sedang memeriksa profil...';
 
   const { data: profil, error: profilError } = await supabase
     .from('profiles')
