@@ -1270,7 +1270,7 @@ let userError;
 
 try {
   const hasilLogin = await Promise.race([
-    supabase.auth.getUser(),
+    window.supabaseClient.auth.getUser(),
     new Promise((_, reject) =>
       setTimeout(() => reject(new Error('Koneksi pemeriksaan akun terlalu lama.')), 15000)
     )
