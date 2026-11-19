@@ -543,7 +543,7 @@ async function selesaikanMisi(checkbox, poin) {
     persentase + '% selesai';
 
   const { data: { user }, error: userError } =
-    await supabase.auth.getUser();
+  await window.supabaseClient.auth.getUser();  
 
   if (userError || !user) {
     console.error('Pengguna belum login:', userError);
@@ -1291,7 +1291,7 @@ if (userError || !user) {
 
 status.textContent = '2. Akun ditemukan, sedang memeriksa profil...';  
     
-  const { data: profil, error: profilError } = await supabase
+  const { data: profil, error: profilError } = await window.supabaseClient
     .from('profiles')
     .select('school_id, role, approval_status')
     .eq('id', user.id)
@@ -1303,7 +1303,7 @@ status.textContent = '2. Akun ditemukan, sedang memeriksa profil...';
     return;
   }
 
-  const { error } = await supabase
+  const { error } = await window.supabaseClient
     .from('student_messages')
     .insert({
       student_id: user.id,
