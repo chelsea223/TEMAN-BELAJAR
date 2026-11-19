@@ -859,6 +859,43 @@ kartu.appendChild(status);
 const kotakBalasan = document.createElement('textarea');
 kotakBalasan.placeholder = 'Tulis balasan untuk siswa...';
 kotakBalasan.value = p.reply || '';
+const tombolBalas = document.createElement('button');
+tombolBalas.textContent = 'Kirim Balasan';
+tombolBalas.type = 'button';
+tombolBalas.style.display = 'inline-block';
+tombolBalas.style.visibility = 'visible';
+tombolBalas.style.marginTop = '10px';
+
+tombolBalas.onclick = async () => {
+  const balasan = kotakBalasan.value.trim();
+
+  if (!balasan) {
+    alert('Silakan tulis balasan terlebih dahulu.');
+    return;
+  }
+
+  tombolBalas.disabled = true;
+  tombolBalas.textContent = 'Mengirim...';
+
+  const { error: errorBalas } = await supabase
+    .from('student_messages')
+    .update({
+      reply: balasan,
+      replied_at: new Date().toISOString(),
+      status: 'dibalas'
+    })
+    .eq('id', p.id);
+
+  if (errorBalas) {
+    alert('Gagal mengirim balasan: ' + errorBalas.message);
+    tombolBalas.disabled = false;
+    tombolBalas.textContent = 'Kirim Balasan';
+    return;
+  }
+
+  alert('Balasan berhasil dikirim!');
+  await tampilkanPesanSiswa();
+};    
 
 const tombolBalas = document.createElement('button');
 tombolBalas.textContent = 'Kirim Balasan';
