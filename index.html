@@ -49,6 +49,7 @@ main {
 </head>
   <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+    
   const SUPABASE_URL = 'https://jmkoqomxxzddclelaedg.supabase.co';
   const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_7RIFP-NzgvLaOBweVB1j4g_KWKkRr6h';
   const supabase = createClient(
@@ -1255,6 +1256,8 @@ function openEmail(){
   window.location.href='mailto:'+email+'?subject='+subject+'&body='+encodeURIComponent(msg);
 }
   async function kirimPesanLangsung() {
+  const status = document.getElementById('contactStatus');
+status.textContent = 'VERSI BARU AKTIF - memeriksa koneksi...';  
   const pesan = document.getElementById('message').value.trim();
   const status = document.getElementById('contactStatus');
 
