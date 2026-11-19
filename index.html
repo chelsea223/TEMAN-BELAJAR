@@ -479,7 +479,6 @@ async function muatDaftarGuruBK() {
     if (guru.approval_status === 'pending') {
   const tombol = document.createElement('button');
   tombol.textContent = 'Setujui Akun';
-
   tombol.onclick = async () => {
     const { error } = await supabase
       .from('profiles')
