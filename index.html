@@ -209,10 +209,21 @@ async function loginUser() {
     );
 
     if (error) {
-      message.textContent = 'Login gagal: ' + error.message;
-      return;
-    }
+  let pesanError = error.message;
 
+  try {
+    const detailError = await error.context.json();
+
+    if (detailError && detailError.error) {
+      pesanError = detailError.error;
+    }
+  } catch (e) {
+    // Jika detail error tidak tersedia, gunakan pesan umum.
+  }
+
+  message.textContent = 'Login gagal: ' + pesanError;
+  return;
+}
     if (!data || !data.success || !data.session) {
       message.textContent =
         data?.error || 'Login gagal. Periksa username dan kata sandi.';
