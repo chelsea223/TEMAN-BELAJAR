@@ -212,7 +212,7 @@ async function loginUser() {
   let pesanError = error.message;
 
   try {
-    const detailError = await error.context.json();
+  const detailError = await error.context.clone().json();
 
     if (detailError && detailError.error) {
       pesanError = detailError.error;
