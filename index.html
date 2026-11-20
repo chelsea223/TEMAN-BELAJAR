@@ -378,6 +378,21 @@ async function muatDaftarSekolah() {
     tempat.appendChild(item);
   });
 }
+function cariAkunAdmin(inputId, daftarId) {
+  const input = document.getElementById(inputId);
+  const daftar = document.getElementById(daftarId);
+
+  if (!input || !daftar) return;
+
+  const kataKunci = input.value.toLowerCase().trim();
+  const kartu = daftar.querySelectorAll('.card');
+
+  kartu.forEach((item) => {
+    item.style.display = item.textContent.toLowerCase().includes(kataKunci)
+      ? ''
+      : 'none';
+  });
+}    
 async function muatDaftarSiswa() {
   const tempat = document.getElementById('daftar-admin-siswa');
 
@@ -1174,6 +1189,7 @@ window.tampilkanRefleksi = tampilkanRefleksi;
   type="text"
   id="cari-admin-siswa"
   placeholder="Cari nama atau username siswa..."
+  oninput="cariAkunAdmin('cari-admin-siswa', 'daftar-admin-siswa')"    
 >
     <div id="daftar-admin-siswa">
       Memuat data siswa...
@@ -1187,6 +1203,7 @@ window.tampilkanRefleksi = tampilkanRefleksi;
   type="text"
   id="cari-admin-guru"
   placeholder="Cari nama atau username Guru BK..."
+  oninput="cariAkunAdmin('cari-admin-guru', 'daftar-guru-bk')"
 >
     <div id="daftar-guru-bk">
       Memuat data Guru BK...
