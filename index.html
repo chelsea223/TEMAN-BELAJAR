@@ -378,7 +378,7 @@ async function muatDaftarSekolah() {
     tempat.appendChild(item);
   });
 }
-function cariAkunAdmin(inputId, daftarId) {
+window.cariAkunAdmin = function(inputId, daftarId) {
   const input = document.getElementById(inputId);
   const daftar = document.getElementById(daftarId);
 
@@ -392,7 +392,7 @@ function cariAkunAdmin(inputId, daftarId) {
       ? ''
       : 'none';
   });
-}    
+};
 async function muatDaftarSiswa() {
   const tempat = document.getElementById('daftar-admin-siswa');
 
