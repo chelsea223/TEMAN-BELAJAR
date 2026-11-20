@@ -847,138 +847,109 @@ async function tampilkanRefleksi() {
 async function tampilkanPesanSiswa() {
   const tempat = document.getElementById('daftar-pesan-siswa');
 
-  tempat.textContent = 'Fungsi pesan sedang dijalankan...';
-  const { data: pesan, error } = await supabase
-  .from('student_messages')
-  .select('id, student_id, message, created_at, status, reply, replied_at')
-  .order('created_at', { ascending: false });
-  if (error) {
-    tempat.textContent = 'Gagal memuat pesan: ' + error.message;
+  if (!tempat) {
+    console.error('Elemen daftar-pesan-siswa tidak ditemukan.');
     return;
   }
 
-  tempat.innerHTML = '';
+  tempat.textContent = 'Memuat pesan siswa...';
 
-  if (!pesan || pesan.length === 0) {
-    tempat.textContent = 'Belum ada pesan dari siswa.';
-    return;
+  try {
+    const { data: pesan, error } = await supabase
+      .from('student_messages')
+      .select('id, student_id, message, created_at, status, reply, replied_at')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      tempat.textContent = 'Gagal memuat pesan: ' + error.message;
+      console.error(error);
+      return;
+    }
+
+    tempat.innerHTML = '';
+
+    if (!pesan || pesan.length === 0) {
+      tempat.textContent = 'Belum ada pesan dari siswa.';
+      return;
+    }
+
+    const ids = [...new Set(pesan.map(p => p.student_id))];
+
+    const { data: siswa, error: errorSiswa } = await supabase
+      .from('profiles')
+      .select('id, full_name')
+      .in('id', ids);
+
+    if (errorSiswa) {
+      tempat.textContent = 'Gagal memuat nama siswa: ' + errorSiswa.message;
+      return;
+    }
+
+    pesan.forEach((p) => {
+      const namaSiswa = (siswa || []).find(s => s.id === p.student_id);
+
+      const kartu = document.createElement('div');
+      kartu.className = 'card';
+
+      const nama = document.createElement('h4');
+      nama.textContent = namaSiswa?.full_name || 'Siswa';
+
+      const isi = document.createElement('p');
+      isi.textContent = p.message || '(Pesan kosong)';
+
+      const waktu = document.createElement('small');
+      waktu.textContent = new Date(p.created_at).toLocaleString('id-ID');
+
+      const status = document.createElement('p');
+      status.textContent = 'Status: ' + (p.status || 'menunggu');
+
+      const kotakBalasan = document.createElement('textarea');
+      kotakBalasan.placeholder = 'Tulis balasan untuk siswa...';
+      kotakBalasan.value = p.reply || '';
+
+      const tombolBalas = document.createElement('button');
+      tombolBalas.type = 'button';
+      tombolBalas.textContent = 'Kirim Balasan';
+
+      tombolBalas.onclick = async () => {
+        const balasan = kotakBalasan.value.trim();
+
+        if (!balasan) {
+          alert('Silakan tulis balasan terlebih dahulu.');
+          return;
+        }
+
+        tombolBalas.disabled = true;
+        tombolBalas.textContent = 'Mengirim...';
+
+        const { error: errorBalas } = await supabase.rpc(
+          'reply_to_student_message',
+          { p_message_id: p.id, p_reply: balasan }
+        );
+
+        if (errorBalas) {
+          alert('Gagal mengirim balasan: ' + errorBalas.message);
+          tombolBalas.disabled = false;
+          tombolBalas.textContent = 'Kirim Balasan';
+          return;
+        }
+
+        alert('Balasan berhasil dikirim!');
+        await tampilkanPesanSiswa();
+      };
+
+      kartu.appendChild(nama);
+      kartu.appendChild(isi);
+      kartu.appendChild(waktu);
+      kartu.appendChild(status);
+      kartu.appendChild(kotakBalasan);
+      kartu.appendChild(tombolBalas);
+      tempat.appendChild(kartu);
+    });
+  } catch (err) {
+    console.error(err);
+    tempat.textContent = 'Terjadi kesalahan: ' + (err.message || err);
   }
-
-  const ids = [...new Set(pesan.map(p => p.student_id))];
-
-  const { data: siswa, error: errorSiswa } = await supabase
-    .from('profiles')
-    .select('id, full_name')
-    .in('id', ids);
-
-  if (errorSiswa) {
-    tempat.textContent = 'Gagal memuat nama siswa: ' + errorSiswa.message;
-    return;
-  }
-
-  pesan.forEach((p) => {
-    const namaSiswa = siswa.find(s => s.id === p.student_id);
-
-    const kartu = document.createElement('div');
-    kartu.className = 'card';
-
-    const nama = document.createElement('h4');
-    nama.textContent = namaSiswa?.full_name || 'Siswa';
-
-    const isi = document.createElement('p');
-    isi.textContent = p.message;
-
-    const waktu = document.createElement('small');
-    waktu.textContent = new Date(p.created_at).toLocaleString('id-ID');
-
-    const status = document.createElement('p');
-    status.textContent = 'Status: ' + p.status;
-
-   kartu.appendChild(nama);
-kartu.appendChild(isi);
-kartu.appendChild(waktu);
-kartu.appendChild(status);
-
-const kotakBalasan = document.createElement('textarea');
-kotakBalasan.placeholder = 'Tulis balasan untuk siswa...';
-kotakBalasan.value = p.reply || '';
-
-tombolBalas.textContent = 'Kirim Balasan';
-tombolBalas.type = 'button';
-tombolBalas.style.display = 'inline-block';
-tombolBalas.style.visibility = 'visible';
-tombolBalas.style.marginTop = '10px';
-
-tombolBalas.onclick = async () => {
-  const balasan = kotakBalasan.value.trim();
-
-  if (!balasan) {
-    alert('Silakan tulis balasan terlebih dahulu.');
-    return;
-  }
-
-  tombolBalas.disabled = true;
-  tombolBalas.textContent = 'Mengirim...';
-
-  const { error: errorBalas } = await supabase
-    .from('student_messages')
-    .update({
-      reply: balasan,
-      replied_at: new Date().toISOString(),
-      status: 'dibalas'
-    })
-    .eq('id', p.id);
-
-  if (errorBalas) {
-    alert('Gagal mengirim balasan: ' + errorBalas.message);
-    tombolBalas.disabled = false;
-    tombolBalas.textContent = 'Kirim Balasan';
-    return;
-  }
-
-  alert('Balasan berhasil dikirim!');
-  await tampilkanPesanSiswa();
-};    
-
-const tombolBalas = document.createElement('button');
-tombolBalas.textContent = 'Kirim Balasan';
-
-tombolBalas.onclick = async () => {
-  const balasan = kotakBalasan.value.trim();
-
-  if (!balasan) {
-    alert('Silakan tulis balasan terlebih dahulu.');
-    return;
-  }
-
-  tombolBalas.disabled = true;
-  tombolBalas.textContent = 'Mengirim...';
-
-  const { error: errorBalas } = await supabase
-    .from('student_messages')
-    .update({
-      reply: balasan,
-      replied_at: new Date().toISOString(),
-      status: 'dibalas'
-    })
-    .eq('id', p.id);
-
-  if (errorBalas) {
-    alert('Gagal mengirim balasan: ' + errorBalas.message);
-    tombolBalas.disabled = false;
-    tombolBalas.textContent = 'Kirim Balasan';
-    return;
-  }
-
-  alert('Balasan berhasil dikirim!');
-  await tampilkanPesanSiswa();
-};
-
-kartu.appendChild(kotakBalasan);
-kartu.appendChild(tombolBalas);
-
-tempat.appendChild(kartu); 
-  });
 }
 window.tampilkanRefleksi = tampilkanRefleksi;    
 </script>
