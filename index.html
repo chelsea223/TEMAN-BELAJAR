@@ -131,22 +131,24 @@ async function registerUser() {
   );
 
  if (error) {
-    let pesanError = error.message;
+  let pesanError = error.message;
 
-    try {
-      const detailError = await error.context.clone().json();
+  try {
+    if (error.context) {
+      const teksError = await error.context.clone().text();
+      const detailError = JSON.parse(teksError);
 
-      if (detailError && detailError.error) {
+      if (detailError.error) {
         pesanError = detailError.error;
       }
-    } catch (e) {
-      // Gunakan pesan umum jika detail error tidak tersedia.
     }
-
-    message.textContent = 'Pendaftaran gagal: ' + pesanError;
-    return;
+  } catch (e) {
+    console.log('Detail respons:', e);
   }
 
+  message.textContent = 'Pendaftaran gagal: ' + pesanError;
+  return;
+}
   if (!data?.success) {
     message.textContent =
       data?.error || 'Pendaftaran gagal.';
