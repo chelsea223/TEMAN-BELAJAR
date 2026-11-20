@@ -317,7 +317,7 @@ async function muatDaftarSekolah() {
 
   const { data, error } = await supabase
     .from('schools')
-    .select('id, name, school_code')
+    .select('id, name, school_code, is_active')
     .order('name');
 
   if (error) {
@@ -342,14 +342,74 @@ async function muatDaftarSekolah() {
     const kode = document.createElement('p');
     kode.textContent = 'Kode Sekolah: ' + sekolah.school_code;
 
-    const tombol = document.createElement('button');
-    tombol.textContent = 'Buat Kode Undangan Guru BK';
+    const status = document.createElement('p');
+    status.textContent = sekolah.is_active ? 'Status: Aktif' : 'Status: Nonaktif';
+
+    const tombolEdit = document.createElement('button');
+    tombolEdit.textContent = 'Edit Sekolah';
+
+    tombolEdit.onclick = async () => {
+      const namaBaru = prompt('Masukkan nama sekolah:', sekolah.name);
+
+      if (namaBaru === null) return;
+
+      if (!namaBaru.trim()) {
+        alert('Nama sekolah tidak boleh kosong.');
+        return;
+      }
+
+      const { error: errorEdit } = await supabase
+        .from('schools')
+        .update({ name: namaBaru.trim() })
+        .eq('id', sekolah.id);
+
+      if (errorEdit) {
+        alert('Gagal mengedit sekolah: ' + errorEdit.message);
+        return;
+      }
+
+      alert('Nama sekolah berhasil diperbarui.');
+      muatDaftarSekolah();
+    };
+
+    const tombolStatus = document.createElement('button');
+    tombolStatus.textContent = sekolah.is_active
+      ? 'Nonaktifkan Sekolah'
+      : 'Aktifkan Sekolah';
+
+    tombolStatus.onclick = async () => {
+      const statusBaru = !sekolah.is_active;
+
+      const konfirmasi = confirm(
+        statusBaru
+          ? 'Aktifkan kembali sekolah ini?'
+          : 'Nonaktifkan sekolah ini?'
+      );
+
+      if (!konfirmasi) return;
+
+      const { error: errorStatus } = await supabase
+        .from('schools')
+        .update({ is_active: statusBaru })
+        .eq('id', sekolah.id);
+
+      if (errorStatus) {
+        alert('Gagal mengubah status sekolah: ' + errorStatus.message);
+        return;
+      }
+
+      alert('Status sekolah berhasil diperbarui.');
+      muatDaftarSekolah();
+    };
+
+    const tombolKode = document.createElement('button');
+    tombolKode.textContent = 'Buat Kode Undangan Guru BK';
 
     const hasilKode = document.createElement('p');
 
-    tombol.onclick = async () => {
-      tombol.disabled = true;
-      tombol.textContent = 'Sedang membuat kode...';
+    tombolKode.onclick = async () => {
+      tombolKode.disabled = true;
+      tombolKode.textContent = 'Sedang membuat kode...';
 
       const { data: kodeBaru, error: errorKode } =
         await supabase.rpc('buat_kode_undangan_guru', {
@@ -358,21 +418,24 @@ async function muatDaftarSekolah() {
 
       if (errorKode) {
         alert('Gagal membuat kode: ' + errorKode.message);
-        tombol.disabled = false;
-        tombol.textContent = 'Buat Kode Undangan Guru BK';
+        tombolKode.disabled = false;
+        tombolKode.textContent = 'Buat Kode Undangan Guru BK';
         return;
       }
 
       hasilKode.textContent = 'Kode Undangan: ' + kodeBaru;
-      tombol.textContent = 'Buat Kode Undangan Lagi';
-      tombol.disabled = false;
+      tombolKode.textContent = 'Buat Kode Undangan Lagi';
+      tombolKode.disabled = false;
 
       alert('Kode undangan berhasil dibuat: ' + kodeBaru);
     };
 
     item.appendChild(nama);
     item.appendChild(kode);
-    item.appendChild(tombol);
+    item.appendChild(status);
+    item.appendChild(tombolEdit);
+    item.appendChild(tombolStatus);
+    item.appendChild(tombolKode);
     item.appendChild(hasilKode);
 
     tempat.appendChild(item);
