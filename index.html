@@ -130,9 +130,20 @@ async function registerUser() {
     }
   );
 
-  if (error) {
-    message.textContent =
-      data?.error || 'Pendaftaran gagal: ' + error.message;
+ if (error) {
+    let pesanError = error.message;
+
+    try {
+      const detailError = await error.context.clone().json();
+
+      if (detailError && detailError.error) {
+        pesanError = detailError.error;
+      }
+    } catch (e) {
+      // Gunakan pesan umum jika detail error tidak tersedia.
+    }
+
+    message.textContent = 'Pendaftaran gagal: ' + pesanError;
     return;
   }
 
