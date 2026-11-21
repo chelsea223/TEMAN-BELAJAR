@@ -1453,51 +1453,99 @@ function showTab(id) {
 document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
 
     
-  function checkQuiz(){
+function checkQuiz() {
   const answers = {
-    q1:'a',
-    q2:'b',
-    q3:'c',
-    q4:'a',
-    q5:'b'
+    q1: 'a',
+    q2: 'b',
+    q3: 'c',
+    q4: 'a',
+    q5: 'b'
   };
+
+  const correctText = {
+    q1: 'Agar kegiatan belajar lebih terarah',
+    q2: 'Menentukan prioritas berdasarkan kepentingan dan tenggat',
+    q3: 'Membuat rangkuman dengan kata-kata sendiri',
+    q4: 'Memeriksa kemajuan dan hambatan',
+    q5: 'Meminta bantuan Guru BK atau pihak yang dipercaya'
+  };
+
+  const explanations = {
+    q1: 'Tujuan belajar membantu kegiatan belajar menjadi lebih terarah.',
+    q2: 'Menentukan prioritas membantu tugas selesai sesuai kepentingan dan tenggat.',
+    q3: 'Rangkuman dengan kata sendiri membantu memahami materi.',
+    q4: 'Evaluasi membantu mengetahui kemajuan dan hambatan belajar.',
+    q5: 'Guru BK atau pihak tepercaya dapat membantu mencari solusi.'
+  };
+
+  const form = document.getElementById('quizForm');
+  const box = document.getElementById('quizResult');
+
+  if (!form || !box) return;
 
   let score = 0;
   let unanswered = [];
 
   Object.keys(answers).forEach((q, i) => {
-    const chosen = document.querySelector(
+    const questionBox = form.querySelector(
+      'input[name="' + q + '"]'
+    )?.closest('.question');
+
+    const oldFeedback = questionBox?.querySelector('.quiz-feedback');
+    if (oldFeedback) oldFeedback.remove();
+
+    const chosen = form.querySelector(
       'input[name="' + q + '"]:checked'
     );
 
     if (!chosen) {
       unanswered.push(i + 1);
-    } else if (chosen.value === answers[q]) {
-      score++;
     }
   });
 
-  const box = document.getElementById('quizResult');
+  box.style.display = 'block';
 
-  if (!box) return;
-
-box.style.display = 'block';
-
-if (unanswered.length) {
+  if (unanswered.length > 0) {
     box.textContent = 'Kamu belum menjawab nomor: ' +
       unanswered.join(', ') + '. Lengkapi dahulu, ya.';
-  } else {
-    let note = score === 5
-      ? 'Hebat! Semua jawaban benar.'
-      : score >= 3
-        ? 'Bagus! Pelajari kembali materi yang belum kamu kuasai.'
-        : 'Tetap semangat. Baca kembali materi, lalu coba lagi.';
+    return;
+  }
 
-    box.textContent = 'Nilai kamu: ' + score + '/5. ' + note;
- }
+  Object.keys(answers).forEach((q) => {
+    const chosen = form.querySelector(
+      'input[name="' + q + '"]:checked'
+    );
+
+    const questionBox = chosen.closest('.question');
+    const feedback = document.createElement('div');
+
+    feedback.className = 'quiz-feedback';
+    feedback.style.marginTop = '8px';
+    feedback.style.fontWeight = '600';
+
+    if (chosen.value === answers[q]) {
+      score++;
+      feedback.textContent = 'Benar! ' + explanations[q];
+      feedback.style.color = '#176447';
+    } else {
+      feedback.textContent = 'Belum tepat. Jawaban yang benar: ' +
+        correctText[q] + '.';
+      feedback.style.color = '#a33';
+    }
+
+    questionBox.appendChild(feedback);
+  });
+
+  let note = score === 5
+    ? 'Hebat! Semua jawaban benar.'
+    : score >= 3
+      ? 'Bagus! Pelajari kembali materi yang belum kamu kuasai.'
+      : 'Tetap semangat. Baca kembali materi, lalu coba lagi.';
+
+  box.textContent = 'Nilai kamu: ' + score + '/5. ' + note;
 }
 
-window.checkQuiz = checkQuiz;
+window.checkQuiz = checkQuiz;  
 console.log('Fungsi kuis berhasil terhubung!')
 function saveReflection(){
   const data={};
