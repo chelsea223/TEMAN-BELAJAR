@@ -856,8 +856,7 @@ async function tampilkanProgresSiswa() {
   // Mengambil data progres siswa
   const { data: progres, error: errorProgres } = await supabase
     .from('student_progress')
-    .select('student_id, total_points, missions_completed, updated_at');
-
+    .select('student_id, total_points, missions_completed, completed_missions, updated_at');
   if (errorProgres) {
     tempat.textContent = 'Gagal memuat progres: ' + errorProgres.message;
     return;
