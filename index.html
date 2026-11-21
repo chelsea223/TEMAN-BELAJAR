@@ -1451,8 +1451,7 @@ function showTab(id) {
 }
 document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
 
-    
-function checkQuiz() {
+async function checkQuiz() {
   const answers = {
     q1: 'a',
     q2: 'b',
@@ -1497,9 +1496,7 @@ function checkQuiz() {
       'input[name="' + q + '"]:checked'
     );
 
-    if (!chosen) {
-      unanswered.push(i + 1);
-    }
+    if (!chosen) unanswered.push(i + 1);
   });
 
   box.style.display = 'block';
@@ -1535,6 +1532,8 @@ function checkQuiz() {
     questionBox.appendChild(feedback);
   });
 
+  const wrongAnswers = 5 - score;
+
   let note = score === 5
     ? 'Hebat! Semua jawaban benar.'
     : score >= 3
@@ -1542,11 +1541,36 @@ function checkQuiz() {
       : 'Tetap semangat. Baca kembali materi, lalu coba lagi.';
 
   box.textContent = 'Nilai kamu: ' + score + '/5. ' + note;
+
+  // Simpan hasil kuis ke Supabase
+  const { data: { user }, error: userError } =
+    await supabase.auth.getUser();
+
+  if (userError || !user) {
+    box.textContent += ' Namun, nilai belum tersimpan. Silakan login kembali.';
+    console.error('Gagal mendapatkan akun siswa:', userError);
+    return;
+  }
+
+  const { error: saveError } = await supabase
+    .from('quiz_results')
+    .insert({
+      student_id: user.id,
+      correct_answers: score,
+      wrong_answers: wrongAnswers,
+      total_questions: 5
+    });
+
+  if (saveError) {
+    console.error('Gagal menyimpan nilai kuis:', saveError);
+    box.textContent += ' Nilai belum berhasil disimpan.';
+    return;
+  }
+
+  box.textContent += ' Nilai berhasil disimpan!';
 }
 
-window.checkQuiz = checkQuiz;  
-console.log('Fungsi kuis berhasil terhubung!')
-function saveReflection(){
+window.checkQuiz = checkQuiz;    
   const data={};
   ['r1','r2','r3','r4'].forEach(id=>data[id]=document.getElementById(id).value);
   try{localStorage.setItem('temanBelajarReflection',JSON.stringify(data));document.getElementById('reflectionStatus').textContent='Refleksi berhasil disimpan di browser/perangkat ini.';}
