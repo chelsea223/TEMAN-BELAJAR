@@ -1481,7 +1481,9 @@ document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()
 
   if (!box) return;
 
-  if (unanswered.length) {
+box.style.display = 'block';
+
+if (unanswered.length) {
     box.textContent = 'Kamu belum menjawab nomor: ' +
       unanswered.join(', ') + '. Lengkapi dahulu, ya.';
   } else {
