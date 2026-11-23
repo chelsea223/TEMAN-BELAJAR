@@ -648,7 +648,7 @@ async function selesaikanMisi(checkbox, poin) {
     persentase + '% selesai';
 
   const { data: { user }, error: userError } =
-  await window.supabaseClient.auth.getUser();  
+  await window.supabaseClient.auth.getUser();
 
   if (userError || !user) {
     console.error('Pengguna belum login:', userError);
@@ -1552,8 +1552,8 @@ async function checkQuiz() {
     return;
   }
 
-  const { error: saveError } = await supabase
-    .from('quiz_results')
+ const { error: saveError } = await window.supabaseClient
+  .from('quiz_results')
     .insert({
       student_id: user.id,
       correct_answers: score,
