@@ -1317,7 +1317,39 @@ window.tampilkanRefleksi = tampilkanRefleksi;
     <p>Memuat riwayat kuis siswa...</p>
   </div>
 </div>
+<div class="card">
+  <h3>🎯 Rekomendasi dan Tindak Lanjut Belajar</h3>
+  <p>Berikan arahan belajar sesuai kebutuhan siswa.</p>
 
+  <label for="pilih-siswa-tindak-lanjut">Pilih Siswa:</label>
+  <select id="pilih-siswa-tindak-lanjut"
+    style="display:block; width:100%; padding:10px; margin:10px 0;">
+    <option value="">Pilih siswa</option>
+  </select>
+
+  <label for="rekomendasi-belajar">Rekomendasi Belajar:</label>
+  <textarea id="rekomendasi-belajar"
+    placeholder="Tuliskan rekomendasi belajar untuk siswa..."
+    rows="3"
+    style="display:block; width:100%; padding:10px; box-sizing:border-box; margin:10px 0;"></textarea>
+
+  <label for="tindak-lanjut-belajar">Tindak Lanjut:</label>
+  <textarea id="tindak-lanjut-belajar"
+    placeholder="Tuliskan langkah tindak lanjut..."
+    rows="3"
+    style="display:block; width:100%; padding:10px; box-sizing:border-box; margin:10px 0;"></textarea>
+
+  <button onclick="simpanTindakLanjutGuru()">
+    Simpan Rekomendasi
+  </button>
+
+  <p id="pesan-tindak-lanjut"></p>
+
+  <h4>📋 Daftar Tindak Lanjut Siswa</h4>
+  <div id="daftar-tindak-lanjut">
+    <p>Belum ada tindak lanjut.</p>
+  </div>
+</div>
   <div class="card">
   <h3>📝 Refleksi Siswa</h3>
   <div id="daftar-refleksi">
