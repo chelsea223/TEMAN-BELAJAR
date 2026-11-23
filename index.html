@@ -763,9 +763,10 @@ async function muatProgresSiswa() {
 }
 
 window.simpanRefleksi = simpanRefleksi;
- async function tampilkanDataSiswa() {
+async function tampilkanDataSiswa() {
   const jumlahSiswa = document.getElementById('jumlah-siswa');
   const daftarSiswa = document.getElementById('daftar-siswa');
+  const pilihan = document.getElementById('pilih-siswa-tindak-lanjut');
 
   const { data, error } = await supabase
     .from('profiles')
@@ -779,15 +780,25 @@ window.simpanRefleksi = simpanRefleksi;
   }
 
   jumlahSiswa.textContent = 'Jumlah siswa: ' + data.length;
-
   daftarSiswa.innerHTML = '';
+
+  if (pilihan) {
+    pilihan.innerHTML = '<option value="">Pilih siswa</option>';
+  }
 
   data.forEach((siswa) => {
     const item = document.createElement('p');
     item.textContent = siswa.full_name || 'Nama belum diisi';
     daftarSiswa.appendChild(item);
+
+    if (pilihan) {
+      const opsi = document.createElement('option');
+      opsi.value = siswa.id;
+      opsi.textContent = siswa.full_name || 'Nama belum diisi';
+      pilihan.appendChild(opsi);
+    }
   });
-}  
+}
 async function tampilkanBalasanGuruBK() {
   const tempat = document.getElementById('balasan-guru-bk');
 
