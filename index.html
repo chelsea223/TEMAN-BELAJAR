@@ -1457,7 +1457,9 @@ function showTab(id) {
   document.querySelectorAll('nav button').forEach(button => {
     button.classList.toggle('active', button.dataset.tab === id);
   });
-
+  if (id === 'riwayat-kuis') {
+  tampilkanRiwayatKuis();
+}
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
