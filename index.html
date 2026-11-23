@@ -1461,7 +1461,49 @@ function showTab(id) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
+async function tampilkanRiwayatKuis() {
+  const tempat = document.getElementById('daftar-riwayat-kuis');
 
+  if (!tempat) return;
+
+  tempat.textContent = 'Memuat riwayat kuis...';
+
+  const { data, error } = await window.supabaseClient
+    .from('quiz_results')
+    .select('correct_answers, wrong_answers, total_questions, created_at')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Gagal memuat riwayat kuis:', error);
+    tempat.textContent = 'Riwayat kuis belum berhasil dimuat.';
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    tempat.textContent = 'Belum ada riwayat kuis.';
+    return;
+  }
+
+  tempat.innerHTML = '';
+
+  data.forEach((hasil, index) => {
+    const kartu = document.createElement('div');
+    kartu.className = 'card';
+
+    const tanggal = new Date(hasil.created_at)
+      .toLocaleString('id-ID');
+
+    kartu.innerHTML = `
+      <h3>Percobaan ${data.length - index}</h3>
+      <p>Nilai: ${hasil.correct_answers}/${hasil.total_questions}</p>
+      <p>Jawaban benar: ${hasil.correct_answers}</p>
+      <p>Jawaban salah: ${hasil.wrong_answers}</p>
+      <p>Tanggal: ${tanggal}</p>
+    `;
+
+    tempat.appendChild(kartu);
+  });
+}
 async function checkQuiz() {
   const answers = {
     q1: 'a',
