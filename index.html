@@ -927,6 +927,82 @@ item.appendChild(daftarDetail);
     tempat.appendChild(item);
   });
 }
+async function tampilkanRiwayatKuisGuru() {
+  const tempat = document.getElementById('daftar-riwayat-kuis-guru');
+
+  if (!tempat) return;
+
+  tempat.textContent = 'Memuat riwayat kuis siswa...';
+
+  // Mengambil daftar siswa dari sekolah Guru BK
+  const { data: siswa, error: errorSiswa } = await supabase
+    .from('profiles')
+    .select('id, full_name')
+    .eq('role', 'student');
+
+  if (errorSiswa) {
+    tempat.textContent = 'Gagal memuat data siswa: ' + errorSiswa.message;
+    return;
+  }
+
+  // Mengambil riwayat kuis sesuai kebijakan akses Supabase
+  const { data: riwayat, error: errorKuis } = await supabase
+    .from('quiz_results')
+    .select('student_id, correct_answers, wrong_answers, total_questions, created_at')
+    .order('created_at', { ascending: false });
+
+  if (errorKuis) {
+    tempat.textContent = 'Gagal memuat riwayat kuis: ' + errorKuis.message;
+    return;
+  }
+
+  tempat.innerHTML = '';
+
+  if (!riwayat || riwayat.length === 0) {
+    tempat.textContent = 'Belum ada riwayat kuis dari siswa.';
+    return;
+  }
+
+  riwayat.forEach((hasil) => {
+    const anak = siswa.find(
+      (s) => s.id === hasil.student_id
+    );
+
+    if (!anak) return;
+
+    const kartu = document.createElement('div');
+    kartu.className = 'card';
+
+    const nama = document.createElement('h4');
+    nama.textContent = anak.full_name || 'Nama belum diisi';
+
+    const nilai = document.createElement('p');
+    nilai.textContent = 'Nilai: ' +
+      hasil.correct_answers + '/' + hasil.total_questions;
+
+    const benar = document.createElement('p');
+    benar.textContent = 'Jawaban benar: ' + hasil.correct_answers;
+
+    const salah = document.createElement('p');
+    salah.textContent = 'Jawaban salah: ' + hasil.wrong_answers;
+
+    const tanggal = document.createElement('p');
+    tanggal.textContent = 'Tanggal: ' +
+      new Date(hasil.created_at).toLocaleString('id-ID');
+
+    kartu.appendChild(nama);
+    kartu.appendChild(nilai);
+    kartu.appendChild(benar);
+    kartu.appendChild(salah);
+    kartu.appendChild(tanggal);
+
+    tempat.appendChild(kartu);
+  });
+
+  if (!tempat.children.length) {
+    tempat.textContent = 'Belum ada riwayat kuis dari siswa.';
+  }
+}    
 async function tampilkanRefleksi() {
   const daftar = document.getElementById('daftar-refleksi');
 
