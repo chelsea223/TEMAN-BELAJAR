@@ -1544,8 +1544,7 @@ async function checkQuiz() {
 
   // Simpan hasil kuis ke Supabase
   const { data: { user }, error: userError } =
-    await supabase.auth.getUser();
-
+  await window.supabaseClient.auth.getUser();
   if (userError || !user) {
     box.textContent += ' Namun, nilai belum tersimpan. Silakan login kembali.';
     console.error('Gagal mendapatkan akun siswa:', userError);
