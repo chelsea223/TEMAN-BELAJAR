@@ -1570,7 +1570,9 @@ async function checkQuiz() {
   box.textContent += ' Nilai berhasil disimpan!';
 }
 
-window.checkQuiz = checkQuiz;    
+window.checkQuiz = checkQuiz;
+
+function saveReflection(){
   const data={};
   ['r1','r2','r3','r4'].forEach(id=>data[id]=document.getElementById(id).value);
   try{localStorage.setItem('temanBelajarReflection',JSON.stringify(data));document.getElementById('reflectionStatus').textContent='Refleksi berhasil disimpan di browser/perangkat ini.';}
