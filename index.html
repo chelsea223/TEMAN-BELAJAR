@@ -304,6 +304,7 @@ async function loginUser() {
         await tampilkanRiwayatKuisGuru();
         await tampilkanRefleksi();
         await tampilkanPesanSiswa();
+        await tampilkanTindakLanjutGuru();
 
         document.querySelector('nav').style.display = 'none';
         document.querySelector('main').style.display = 'none';
@@ -1137,6 +1138,137 @@ async function tampilkanPesanSiswa() {
     tempat.textContent = 'Terjadi kesalahan: ' + (err.message || err);
   }
 }
+async function tampilkanTindakLanjutGuru() {
+  const pilihan = document.getElementById('pilih-siswa-tindak-lanjut');
+  const daftar = document.getElementById('daftar-tindak-lanjut');
+
+  if (!pilihan || !daftar) return;
+
+  pilihan.innerHTML = '<option value="">Pilih siswa</option>';
+  daftar.textContent = 'Memuat tindak lanjut...';
+
+  const { data: siswa, error: errorSiswa } = await supabase
+    .from('profiles')
+    .select('id, full_name')
+    .eq('role', 'student');
+
+  if (errorSiswa) {
+    daftar.textContent = 'Gagal memuat siswa: ' + errorSiswa.message;
+    return;
+  }
+
+  (siswa || []).forEach((anak) => {
+    const opsi = document.createElement('option');
+    opsi.value = anak.id;
+    opsi.textContent = anak.full_name || 'Nama belum diisi';
+    pilihan.appendChild(opsi);
+  });
+
+  await muatDaftarTindakLanjut();
+}
+
+async function simpanTindakLanjutGuru() {
+  const studentId = document.getElementById('pilih-siswa-tindak-lanjut').value;
+  const rekomendasi = document.getElementById('rekomendasi-belajar').value.trim();
+  const tindakLanjut = document.getElementById('tindak-lanjut-belajar').value.trim();
+  const pesan = document.getElementById('pesan-tindak-lanjut');
+
+  if (!studentId || !rekomendasi || !tindakLanjut) {
+    pesan.textContent = 'Pilih siswa dan lengkapi semua isian.';
+    return;
+  }
+
+  const { data: userData, error: authError } = await supabase.auth.getUser();
+
+  if (authError || !userData.user) {
+    pesan.textContent = 'Silakan login kembali.';
+    return;
+  }
+
+  const { error } = await supabase
+    .from('learning_followups')
+    .insert({
+      student_id: studentId,
+      counselor_id: userData.user.id,
+      recommendation: rekomendasi,
+      follow_up: tindakLanjut
+    });
+
+  if (error) {
+    pesan.textContent = 'Gagal menyimpan: ' + error.message;
+    return;
+  }
+
+  pesan.textContent = 'Rekomendasi berhasil disimpan!';
+
+  document.getElementById('rekomendasi-belajar').value = '';
+  document.getElementById('tindak-lanjut-belajar').value = '';
+
+  await muatDaftarTindakLanjut();
+}
+
+async function muatDaftarTindakLanjut() {
+  const daftar = document.getElementById('daftar-tindak-lanjut');
+
+  const { data, error } = await supabase
+    .from('learning_followups')
+    .select('id, student_id, recommendation, follow_up, status, created_at')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    daftar.textContent = 'Gagal memuat tindak lanjut: ' + error.message;
+    return;
+  }
+
+  daftar.innerHTML = '';
+
+  if (!data || data.length === 0) {
+    daftar.textContent = 'Belum ada tindak lanjut.';
+    return;
+  }
+
+  const ids = [...new Set(data.map(item => item.student_id))];
+
+  const { data: siswa, error: errorSiswa } = await supabase
+    .from('profiles')
+    .select('id, full_name')
+    .in('id', ids);
+
+  if (errorSiswa) {
+    daftar.textContent = 'Gagal memuat nama siswa: ' + errorSiswa.message;
+    return;
+  }
+
+  data.forEach((item) => {
+    const anak = (siswa || []).find(s => s.id === item.student_id);
+
+    const kartu = document.createElement('div');
+    kartu.className = 'card';
+
+    const nama = document.createElement('h4');
+    nama.textContent = anak?.full_name || 'Siswa';
+
+    const rekomendasi = document.createElement('p');
+    rekomendasi.textContent = 'Rekomendasi: ' + item.recommendation;
+
+    const tindakLanjut = document.createElement('p');
+    tindakLanjut.textContent = 'Tindak lanjut: ' + item.follow_up;
+
+    const status = document.createElement('p');
+    status.textContent = 'Status: ' + item.status;
+
+    const tanggal = document.createElement('small');
+    tanggal.textContent = new Date(item.created_at).toLocaleString('id-ID');
+
+    kartu.appendChild(nama);
+    kartu.appendChild(rekomendasi);
+    kartu.appendChild(tindakLanjut);
+    kartu.appendChild(status);
+    kartu.appendChild(tanggal);
+
+    daftar.appendChild(kartu);
+  });
+}    
 window.tampilkanRefleksi = tampilkanRefleksi;    
 </script>
 <body>
