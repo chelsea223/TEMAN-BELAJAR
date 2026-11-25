@@ -60,7 +60,89 @@ header,
 nav,
 main {
   display: none;
-}  
+}
+  /* TAMPILAN LOGIN DI TENGAH LAYAR */
+.auth-container {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 25px 16px;
+  background: linear-gradient(135deg, #eeeaff, #ffeaf3, #e8f4ff);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 430px;
+  padding: 32px 28px;
+  margin: auto;
+  background: #ffffff;
+  border-radius: 22px;
+  box-shadow: 0 10px 35px rgba(80, 65, 150, 0.15);
+  text-align: center;
+}
+
+.auth-card h2 {
+  color: #6558d3;
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.auth-card h3 {
+  color: #4d459b;
+  margin-top: 24px;
+}
+
+.auth-card p {
+  color: #68718a;
+}
+
+.auth-card input,
+.auth-card select {
+  width: 100%;
+  padding: 13px;
+  margin: 8px 0;
+  border: 1px solid #dedaf5;
+  border-radius: 11px;
+  font-size: 15px;
+}
+
+.auth-card button {
+  width: 100%;
+  padding: 13px;
+  margin-top: 12px;
+  border: none;
+  border-radius: 11px;
+  background: #6558d3;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.auth-card button:hover {
+  background: #5145b5;
+}
+
+.auth-card a {
+  color: #6558d3;
+  font-weight: bold;
+}
+
+.auth-card #auth-message {
+  overflow-wrap: anywhere;
+}
+
+body:has(#auth-section:not([style*="display: none"])) footer {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .auth-card {
+    padding: 25px 20px;
+  }
+}
 </style>
 </head>
   <script type="module">
