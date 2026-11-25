@@ -143,6 +143,44 @@ body:has(#auth-section:not([style*="display: none"])) footer {
     padding: 25px 20px;
   }
 }
+  /* MEMpercantik KOLOM DAN TOMBOL LOGIN */
+.auth-card input {
+  background-color: #faf9ff;
+  color: #26304a;
+  transition: 0.25s ease;
+}
+
+.auth-card input::placeholder {
+  color: #9994b5;
+}
+
+.auth-card input:focus,
+.auth-card select:focus {
+  outline: none;
+  border-color: #6558d3;
+  box-shadow: 0 0 0 3px rgba(101, 88, 211, 0.13);
+  background: #ffffff;
+}
+
+.auth-card button {
+  background: linear-gradient(120deg, #6558d3, #9678e8);
+  box-shadow: 0 4px 12px rgba(101, 88, 211, 0.2);
+  transition: 0.25s ease;
+}
+
+.auth-card button:hover {
+  background: linear-gradient(120deg, #5145b5, #8062d5);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(101, 88, 211, 0.25);
+}
+
+.auth-card a {
+  text-decoration: none;
+}
+
+.auth-card a:hover {
+  text-decoration: underline;
+}
 </style>
 </head>
   <script type="module">
