@@ -181,13 +181,15 @@ body:has(#auth-section:not([style*="display: none"])) footer {
 .auth-card a:hover {
   text-decoration: underline;
 }
-  /* MEMUSATKAN DASHBOARD SISWA, GURU BK, DAN ADMIN */
+ /* MEMUSATKAN DASHBOARD SISWA, GURU BK, DAN ADMIN */
 #dashboard-siswa,
 #dashboard-guru,
 #dashboard-admin {
+  display: block;
   width: 100%;
   max-width: 1050px;
-  margin: 24px auto 45px;
+  box-sizing: border-box;
+  margin: 24px auto 45px !important;
   padding: 20px 16px !important;
 }
 </style>
